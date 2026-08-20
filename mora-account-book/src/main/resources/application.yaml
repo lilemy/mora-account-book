@@ -1,0 +1,16 @@
+# 开发环境配置
+server:
+  port: 9126
+  servlet:
+    context-path: /api
+
+# Spring配置
+spring:
+  application:
+    name: mora-account-book
+  profiles:
+    active: dev
+
+# 日志配置
+logging:
+  config: classpath:logback-plus.xml
