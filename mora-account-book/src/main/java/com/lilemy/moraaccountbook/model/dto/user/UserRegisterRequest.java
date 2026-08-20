@@ -24,22 +24,23 @@ public class UserRegisterRequest implements Serializable {
     /**
      * 用户手机号
      */
-    @NotBlank(message = "用户手机号不能为空")
     @Schema(description = "用户手机号")
+    @NotBlank(message = "用户手机号不能为空")
     private String userPhone;
 
     /**
      * 用户密码
      */
+    @Schema(description = "用户密码")
     @NotBlank(message = "用户密码不能为空")
     @Size(min = 8, message = "用户密码长度不能少于8位")
-    @Schema(description = "用户密码")
+    @Size(max = 20, message = "用户密码长度不能超过20位")
     private String userPassword;
 
     /**
      * 用户确认密码
      */
-    @NotBlank(message = "用户确认密码不能为空")
     @Schema(description = "用户确认密码")
+    @NotBlank(message = "用户确认密码不能为空")
     private String checkPassword;
 }

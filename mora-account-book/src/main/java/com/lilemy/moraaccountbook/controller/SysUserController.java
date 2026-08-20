@@ -2,17 +2,16 @@ package com.lilemy.moraaccountbook.controller;
 
 import com.lilemy.moraaccountbook.common.BaseResponse;
 import com.lilemy.moraaccountbook.common.ResultUtils;
+import com.lilemy.moraaccountbook.model.dto.user.UserLoginRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserRegisterRequest;
 import com.lilemy.moraaccountbook.model.entity.SysUser;
+import com.lilemy.moraaccountbook.model.vo.user.SysLoginUserVO;
 import com.lilemy.moraaccountbook.service.SysUserService;
-import com.mybatisflex.core.paginate.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 用户 控制层。
@@ -34,69 +33,22 @@ public class SysUserController {
         return ResultUtils.success(sysUserService.userRegister(request));
     }
 
-    /**
-     * 保存用户。
-     *
-     * @param sysUser 用户
-     * @return {@code true} 保存成功，{@code false} 保存失败
-     */
-    @PostMapping("save")
-    public boolean save(@RequestBody SysUser sysUser) {
-        return sysUserService.save(sysUser);
+    @Operation(summary = "用户登录")
+    @PostMapping("/login")
+    public BaseResponse<SysLoginUserVO> userLogin(@Validated @RequestBody UserLoginRequest request) {
+        return ResultUtils.success(sysUserService.userLogin(request));
     }
 
-    /**
-     * 根据主键删除用户。
-     *
-     * @param id 主键
-     * @return {@code true} 删除成功，{@code false} 删除失败
-     */
-    @DeleteMapping("remove/{id}")
-    public boolean remove(@PathVariable Long id) {
-        return sysUserService.removeById(id);
+    @Operation(summary = "用户登出")
+    @PostMapping("/logout")
+    public BaseResponse<Boolean> userLogout() {
+        return ResultUtils.success(sysUserService.userLogout());
     }
 
-    /**
-     * 根据主键更新用户。
-     *
-     * @param sysUser 用户
-     * @return {@code true} 更新成功，{@code false} 更新失败
-     */
-    @PutMapping("update")
-    public boolean update(@RequestBody SysUser sysUser) {
-        return sysUserService.updateById(sysUser);
+    @Operation(summary = "获取当前登录用户")
+    @GetMapping("/getLoginUser")
+    public BaseResponse<SysLoginUserVO> getLoginUser() {
+        SysUser loginUser = sysUserService.getLoginUser();
+        return ResultUtils.success(sysUserService.getLoginUserVO(loginUser));
     }
-
-    /**
-     * 查询所有用户。
-     *
-     * @return 所有数据
-     */
-    @GetMapping("list")
-    public List<SysUser> list() {
-        return sysUserService.list();
-    }
-
-    /**
-     * 根据主键获取用户。
-     *
-     * @param id 用户主键
-     * @return 用户详情
-     */
-    @GetMapping("getInfo/{id}")
-    public SysUser getInfo(@PathVariable Long id) {
-        return sysUserService.getById(id);
-    }
-
-    /**
-     * 分页查询用户。
-     *
-     * @param page 分页对象
-     * @return 分页对象
-     */
-    @GetMapping("page")
-    public Page<SysUser> page(Page<SysUser> page) {
-        return sysUserService.page(page);
-    }
-
 }

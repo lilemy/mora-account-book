@@ -1,5 +1,7 @@
 package com.lilemy.moraaccountbook.exception;
 
+import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotRoleException;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONUtil;
 import com.lilemy.moraaccountbook.common.BaseResponse;
@@ -61,6 +63,34 @@ public class GlobalExceptionHandler {
         log.warn("请求参数异常 ID:[{}], URL[{}], IP:[{}], 参数:[{}], 异常信息:[{} {}]",
                 requestId, url, remoteHost, reqParam, ErrorCode.PARAMS_ERROR.getCode(), msg);
         return ResultUtils.error(ErrorCode.PARAMS_ERROR, msg);
+    }
+
+    @ExceptionHandler(NotRoleException.class)
+    public BaseResponse<?> notRoleExceptionHandler(RuntimeException e, HttpServletRequest request) {
+        // 获取请求地址
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+        String url = method + " " + path;
+        String remoteHost = request.getRemoteHost();
+        // 生成请求唯一 id
+        String requestId = IdUtil.fastSimpleUUID();
+        log.warn("无权限异常 ID:[{}], URL[{}], IP:[{}], 错误信息:[{}]",
+                requestId, url, remoteHost, e.getMessage(), e);
+        return ResultUtils.error(ErrorCode.NO_AUTH_ERROR, "无权限");
+    }
+
+    @ExceptionHandler(NotLoginException.class)
+    public BaseResponse<?> notLoginExceptionHandler(RuntimeException e, HttpServletRequest request) {
+        // 获取请求地址
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+        String url = method + " " + path;
+        String remoteHost = request.getRemoteHost();
+        // 生成请求唯一 id
+        String requestId = IdUtil.fastSimpleUUID();
+        log.warn("未登录异常 ID:[{}], URL[{}], IP:[{}], 错误信息:[{}]",
+                requestId, url, remoteHost, e.getMessage());
+        return ResultUtils.error(ErrorCode.NOT_LOGIN_ERROR, "未登录");
     }
 
     @ExceptionHandler(RuntimeException.class)

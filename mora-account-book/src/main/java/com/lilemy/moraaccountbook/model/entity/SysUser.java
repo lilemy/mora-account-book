@@ -1,5 +1,6 @@
 package com.lilemy.moraaccountbook.model.entity;
 
+import cn.dev33.satoken.json.SaJsonType;
 import com.lilemy.moraaccountbook.model.enums.LogicallyDeleteEnum;
 import com.lilemy.moraaccountbook.model.enums.SysUserGenderEnum;
 import com.lilemy.moraaccountbook.model.enums.SysUserRoleEnum;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * 用户 实体类。
@@ -28,7 +29,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("sys_user")
-public class SysUser implements Serializable {
+public class SysUser implements Serializable, SaJsonType {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -87,17 +88,17 @@ public class SysUser implements Serializable {
     /**
      * 编辑时间
      */
-    private Timestamp editTime;
+    private LocalDateTime editTime;
 
     /**
      * 创建时间
      */
-    private Timestamp createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
-    private Timestamp updateTime;
+    private LocalDateTime updateTime;
 
     /**
      * 是否删除
