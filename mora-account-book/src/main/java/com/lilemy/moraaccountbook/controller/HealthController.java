@@ -1,5 +1,6 @@
 package com.lilemy.moraaccountbook.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import com.lilemy.moraaccountbook.common.BaseResponse;
 import com.lilemy.moraaccountbook.common.ResultUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lilemy
  * @date 2026-08-17
  */
+@SaIgnore
 @RestController
 @Tag(name = "健康检查接口")
 @RequestMapping("/health")

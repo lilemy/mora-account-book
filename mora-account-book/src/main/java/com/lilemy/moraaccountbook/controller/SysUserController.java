@@ -1,5 +1,6 @@
 package com.lilemy.moraaccountbook.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import com.lilemy.moraaccountbook.common.BaseResponse;
 import com.lilemy.moraaccountbook.common.ResultUtils;
 import com.lilemy.moraaccountbook.model.dto.user.UserLoginRequest;
@@ -27,12 +28,14 @@ public class SysUserController {
     @Resource
     private SysUserService sysUserService;
 
+    @SaIgnore
     @Operation(summary = "用户注册")
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@Validated @RequestBody UserRegisterRequest request) {
         return ResultUtils.success(sysUserService.userRegister(request));
     }
 
+    @SaIgnore
     @Operation(summary = "用户登录")
     @PostMapping("/login")
     public BaseResponse<SysLoginUserVO> userLogin(@Validated @RequestBody UserLoginRequest request) {
