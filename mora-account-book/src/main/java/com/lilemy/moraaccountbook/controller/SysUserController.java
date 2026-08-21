@@ -2,11 +2,16 @@ package com.lilemy.moraaccountbook.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import com.lilemy.moraaccountbook.common.BaseResponse;
+import com.lilemy.moraaccountbook.common.PageQuery;
+import com.lilemy.moraaccountbook.common.PageResult;
 import com.lilemy.moraaccountbook.common.ResultUtils;
 import com.lilemy.moraaccountbook.model.dto.user.UserLoginRequest;
+import com.lilemy.moraaccountbook.model.dto.user.UserQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserRegisterRequest;
+import com.lilemy.moraaccountbook.model.dto.user.UserUpdateRequest;
 import com.lilemy.moraaccountbook.model.entity.SysUser;
 import com.lilemy.moraaccountbook.model.vo.user.SysLoginUserVO;
+import com.lilemy.moraaccountbook.model.vo.user.SysUserManageVO;
 import com.lilemy.moraaccountbook.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -53,5 +58,30 @@ public class SysUserController {
     public BaseResponse<SysLoginUserVO> getLoginUser() {
         SysUser loginUser = sysUserService.getLoginUser();
         return ResultUtils.success(sysUserService.getLoginUserVO(loginUser));
+    }
+
+    @Operation(summary = "获取用户信息（管理员）")
+    @GetMapping("/admin/{id}")
+    public BaseResponse<SysUserManageVO> getSysUserById(@PathVariable Long id) {
+        SysUser sysUser = sysUserService.getById(id);
+        return ResultUtils.success(sysUserService.getSysUserManageVO(sysUser));
+    }
+
+    @Operation(summary = "分页获取用户信息（管理员）")
+    @GetMapping("/admin/page")
+    public BaseResponse<PageResult<SysUserManageVO>> getSysUserManageVOPage(UserQueryRequest request, PageQuery pageQuery) {
+        return ResultUtils.success(sysUserService.getSysUserManageVOPage(request, pageQuery));
+    }
+
+    @Operation(summary = "更新用户信息（管理员）")
+    @PutMapping("/admin")
+    public BaseResponse<Boolean> updateSysUser(@Validated @RequestBody UserUpdateRequest request) {
+        return ResultUtils.success(sysUserService.updateSysUser(request));
+    }
+
+    @Operation(summary = "删除用户信息（管理员）")
+    @DeleteMapping("/admin/{id}")
+    public BaseResponse<Boolean> deleteSysUser(@PathVariable Long id) {
+        return ResultUtils.success(sysUserService.deleteSysUser(id));
     }
 }

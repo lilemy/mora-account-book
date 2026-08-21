@@ -39,6 +39,8 @@ springdoc:
     path: /swagger-ui.html
     tags-sorter: alpha
     operations-sorter: alpha
+  # 将 GET 请求中的复合对象参数展开为独立的查询参数
+  default-flat-param-object: true
 
 # knife4j的增强配置，不需要增强可以不配
 knife4j:

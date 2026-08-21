@@ -1,9 +1,15 @@
 package com.lilemy.moraaccountbook.service;
 
+import com.lilemy.moraaccountbook.common.PageQuery;
+import com.lilemy.moraaccountbook.common.PageResult;
 import com.lilemy.moraaccountbook.model.dto.user.UserLoginRequest;
+import com.lilemy.moraaccountbook.model.dto.user.UserQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserRegisterRequest;
+import com.lilemy.moraaccountbook.model.dto.user.UserUpdateRequest;
 import com.lilemy.moraaccountbook.model.entity.SysUser;
 import com.lilemy.moraaccountbook.model.vo.user.SysLoginUserVO;
+import com.lilemy.moraaccountbook.model.vo.user.SysUserManageVO;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
 
 /**
@@ -51,6 +57,48 @@ public interface SysUserService extends IService<SysUser> {
      * @return 登录用户信息
      */
     SysLoginUserVO getLoginUserVO(SysUser sysUser);
+
+    /**
+     * 更新用户信息
+     *
+     * @param request 更新请求
+     * @return 是否更新成功
+     */
+    Boolean updateSysUser(UserUpdateRequest request);
+
+    /**
+     * 删除用户
+     *
+     * @param id 用户ID
+     * @return 是否删除成功
+     */
+    Boolean deleteSysUser(Long id);
+
+    /**
+     * 获取用户管理封装信息分页
+     *
+     * @param request   查询请求
+     * @param pageQuery 分页查询
+     * @return 用户管理封装信息分页
+     */
+    PageResult<SysUserManageVO> getSysUserManageVOPage(UserQueryRequest request, PageQuery pageQuery);
+
+    /**
+     * 获取查询条件
+     *
+     * @param request   查询请求
+     * @param pageQuery 分页查询
+     * @return 查询条件
+     */
+    QueryWrapper getQueryWrapper(UserQueryRequest request, PageQuery pageQuery);
+
+    /**
+     * 获取用户管理封装信息
+     *
+     * @param sysUser 用户信息
+     * @return 用户管理封装信息
+     */
+    SysUserManageVO getSysUserManageVO(SysUser sysUser);
 
     /**
      * 获取加密后的密码
