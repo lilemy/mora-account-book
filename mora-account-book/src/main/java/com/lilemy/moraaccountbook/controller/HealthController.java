@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @SaIgnore
 @RestController
-@Tag(name = "健康检查接口")
 @RequestMapping("/health")
+@Tag(name = "HealthController", description = "健康检查接口")
 public class HealthController {
 
     @GetMapping()

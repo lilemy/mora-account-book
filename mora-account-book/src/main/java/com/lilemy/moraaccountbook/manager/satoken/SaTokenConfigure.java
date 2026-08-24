@@ -1,6 +1,7 @@
 package com.lilemy.moraaccountbook.manager.satoken;
 
 import cn.dev33.satoken.interceptor.SaInterceptor;
+import cn.dev33.satoken.router.SaHttpMethod;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
 import com.lilemy.moraaccountbook.model.enums.SysUserRoleEnum;
@@ -24,6 +25,7 @@ public class SaTokenConfigure implements WebMvcConfigurer {
         registry.addInterceptor(new SaInterceptor(handler -> {
             SaRouter.match("/**")
                     .notMatch(NOT_MATCH_PATH)
+                    .notMatch(SaHttpMethod.OPTIONS)
                     .check(r -> StpUtil.checkLogin());
 
             // 匹配所有 admin 开头的路径，要求登录用户必须有为管理员

@@ -1,13 +1,9 @@
-import {
-  LogoutOutlined,
-  SettingOutlined,
-  SkinOutlined,
-} from '@ant-design/icons';
+import { LogoutOutlined } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
 import type { MenuProps } from 'antd';
 import { Spin } from 'antd';
 import React, { startTransition } from 'react';
-import { outLogin } from '@/services/ant-design-pro/api';
+import { userLogout } from '@/services/mora-account-book/sysUserController';
 import HeaderDropdown from '../HeaderDropdown';
 
 type GlobalHeaderRightProps = {
@@ -15,16 +11,6 @@ type GlobalHeaderRightProps = {
 };
 
 const menuItems: MenuProps['items'] = [
-  {
-    key: 'settings',
-    icon: <SettingOutlined />,
-    label: '个人设置',
-  },
-  {
-    key: 'theme',
-    icon: <SkinOutlined />,
-    label: '主题设置',
-  },
   {
     type: 'divider' as const,
   },
@@ -35,12 +21,12 @@ const menuItems: MenuProps['items'] = [
   },
 ];
 
+/**
+ * 退出登录，并且将当前的 url 保存
+ */
 const loginOut = async () => {
-  try {
-    await outLogin();
-  } catch {
-    // Local logout has already cleared user state; redirect should still proceed.
-  }
+  await userLogout();
+
   const { search, pathname } = window.location;
   const urlParams = new URL(window.location.href).searchParams;
   const searchParams = new URLSearchParams({
@@ -65,10 +51,6 @@ const RightContent: React.FC<GlobalHeaderRightProps> = ({ children }) => {
         setInitialState((s) => ({ ...s, currentUser: undefined }));
       });
       loginOut();
-      return;
-    }
-    if (key === 'theme') {
-      setInitialState((s) => ({ ...s, settingDrawerOpen: true }));
       return;
     }
     history.push(`/account/${key}`);

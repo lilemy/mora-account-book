@@ -1,4 +1,3 @@
-import { GithubOutlined } from '@ant-design/icons';
 import { Divider } from 'antd';
 import { createStyles } from 'antd-style';
 import React from 'react';
@@ -81,38 +80,36 @@ const Footer: React.FC = () => {
         </span>
         <Divider orientation="vertical" className={styles.divider} />
         <span className={styles.group}>
-          <span className={styles.label}>Umi</span>
+          <span className={styles.label}>
+            <img
+              src="/gov.ico"
+              alt=""
+              width={14}
+              height={14}
+              style={{ marginRight: 4, verticalAlign: '-2px' }}
+            />
+          </span>
           <a
             className={styles.link}
-            href="https://umijs.org/"
+            href="https://beian.mps.gov.cn/#/query/webSearch?code=50010602504893"
             target="_blank"
             rel="noopener noreferrer"
           >
-            {__UMI_VERSION__}
+            渝公网安备50010602504893号
           </a>
         </span>
         <Divider orientation="vertical" className={styles.divider} />
         <span className={styles.group}>
-          <span className={styles.label}>Utoo</span>
+          <span className={styles.label}></span>
           <a
             className={styles.link}
-            href="https://utoo.land"
+            href="https://beian.miit.gov.cn/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            {__UTOO_VERSION__}
+            渝ICP备2024030252号
           </a>
         </span>
-        <Divider orientation="vertical" className={styles.divider} />
-        <a
-          className={styles.link}
-          href={REPO_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <GithubOutlined style={{ marginRight: 4 }} />
-          GitHub
-        </a>
       </div>
     </div>
   );

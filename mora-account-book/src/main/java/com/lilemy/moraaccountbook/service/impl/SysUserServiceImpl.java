@@ -56,7 +56,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser sysUser = new SysUser();
         sysUser.setUserPhone(userPhone);
         sysUser.setUserPassword(encodePassword);
-        sysUser.setUserName("小摩拉");
+        sysUser.setUserName(UserConstant.USER_DEFAULT_NAME);
+        sysUser.setUserAvatar(UserConstant.USER_DEFAULT_AVATAR_URL);
         boolean save = this.save(sysUser);
         ThrowUtils.throwIf(!save, ErrorCode.OPERATION_ERROR, "注册失败");
         // 5.返回结果

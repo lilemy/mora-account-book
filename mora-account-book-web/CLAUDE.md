@@ -32,7 +32,7 @@ Other: `npm run openapi` (regenerate `src/services/`), `npm run simple` (**irrev
 
 **Styling priority**: Tailwind CSS v4 (layout) → antd-style v4 / `createStyles` (theme tokens) → CSS Modules → Less (legacy only).
 
-**Request**: built-in `request` from `@umijs/max`, configured in `src/requestErrorConfig.ts`. Per-page `service.ts` for non-generated APIs.
+**Request**: built-in `request` from `@umijs/max`, configured in `src/requestConfig.ts`. Per-page `service.ts` for non-generated APIs.
 
 **Mock**: `mock/` (global) + `src/pages/**/_mock.ts` (co-located). Express-style handlers.
 

@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.*;
  * @since 2026-08-20
  */
 @RestController
-@Tag(name = "用户接口")
 @RequestMapping("/sysUser")
+@Tag(name = "SysUserController", description = "用户接口")
 public class SysUserController {
 
     @Resource

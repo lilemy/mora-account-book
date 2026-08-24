@@ -12,4 +12,14 @@ public interface UserConstant {
      * 用户登录态键
      */
     String USER_LOGIN_STATE = "user_login";
+
+    /**
+     * 用户头像默认地址
+     */
+    String USER_DEFAULT_AVATAR_URL = "https://pic.lilemy.cn/public/mora-logo.svg";
+
+    /**
+     * 用户默认昵称
+     */
+    String USER_DEFAULT_NAME = "小摩拉";
 }

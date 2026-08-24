@@ -8,6 +8,11 @@ export default [
         path: '/user/login',
         component: './user/login',
       },
+      {
+        name: '注册',
+        path: '/user/register',
+        component: './user/register',
+      },
     ],
   },
   {
@@ -32,12 +37,6 @@ export default [
         component: './Admin',
       },
     ],
-  },
-  {
-    name: '查询表格',
-    icon: 'table',
-    path: '/list',
-    component: './table-list',
   },
   {
     path: '/',
