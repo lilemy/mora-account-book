@@ -1,9 +1,9 @@
 {
-  "name": "ant-design-pro",
-  "version": "6.0.3",
+  "name": "mora-account-book",
+  "version": "0.0.1",
   "private": true,
-  "description": "An out-of-box UI solution for enterprise applications",
-  "repository": "git@github.com:ant-design/ant-design-pro.git",
+  "description": "摩拉记账本",
+  "repository": "https://github.com/lilemy/mora-account-book",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 max build",
     "build": "max build",
