@@ -2,12 +2,19 @@ package com.lilemy.moraaccountbook.generator;
 
 import cn.hutool.core.lang.Dict;
 import cn.hutool.setting.yaml.YamlUtil;
+import com.lilemy.moraaccountbook.model.entity.BaseEntity;
 import com.mybatisflex.codegen.Generator;
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.dialect.JdbcTypeMapping;
 import com.zaxxer.hikari.HikariDataSource;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -44,6 +51,11 @@ public class MyBatisCodeGenerator {
 
     // 详细配置见：https://mybatis-flex.com/zh/others/codegen.html
     public static GlobalConfig createGlobalConfig() {
+        // 将 JDBC 旧日期类型映射为 Java 8+ 时间类型。
+        JdbcTypeMapping.registerMapping(Date.class, LocalDate.class);
+        JdbcTypeMapping.registerMapping(Time.class, LocalTime.class);
+        JdbcTypeMapping.registerMapping(Timestamp.class, LocalDateTime.class);
+
         // 创建配置内容
         GlobalConfig globalConfig = new GlobalConfig();
 
@@ -60,6 +72,7 @@ public class MyBatisCodeGenerator {
         // 设置生成 entity 并启用 Lombok
         globalConfig.enableEntity()
                 .setWithLombok(true)
+                .setSuperClass(BaseEntity.class)
                 .setJdkVersion(21);
 
         // 设置生成 mapper

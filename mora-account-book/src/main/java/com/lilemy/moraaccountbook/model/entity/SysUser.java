@@ -9,10 +9,7 @@ import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.keygen.KeyGenerators;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -28,8 +25,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Table("sys_user")
-public class SysUser implements Serializable, SaJsonType {
+public class SysUser extends BaseEntity implements Serializable, SaJsonType {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -89,16 +87,6 @@ public class SysUser implements Serializable, SaJsonType {
      * 编辑时间
      */
     private LocalDateTime editTime;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateTime;
 
     /**
      * 是否删除

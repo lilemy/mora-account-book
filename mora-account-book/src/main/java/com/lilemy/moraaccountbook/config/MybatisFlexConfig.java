@@ -1,5 +1,8 @@
 package com.lilemy.moraaccountbook.config;
 
+import com.lilemy.moraaccountbook.model.entity.BaseEntity;
+import com.lilemy.moraaccountbook.model.listener.EntityTimestampListener;
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.audit.AuditManager;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +21,12 @@ public class MybatisFlexConfig {
 
     @PostConstruct
     public void init() {
+        // 为所有 BaseEntity 子类注册新增、更新时的公共字段填充。
+        EntityTimestampListener timestampListener = new EntityTimestampListener();
+        FlexGlobalConfig globalConfig = FlexGlobalConfig.getDefaultConfig();
+        globalConfig.registerInsertListener(timestampListener, BaseEntity.class);
+        globalConfig.registerUpdateListener(timestampListener, BaseEntity.class);
+
         // 1. 开启审计功能
         AuditManager.setAuditEnable(true);
 
