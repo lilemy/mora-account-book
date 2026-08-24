@@ -1,0 +1,2 @@
+cd mora-account-book-web
+npx --no -- lint-staged

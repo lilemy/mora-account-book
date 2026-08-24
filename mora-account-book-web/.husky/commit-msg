@@ -1,0 +1,3 @@
+commit_msg_file="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+cd mora-account-book-web
+npx --no -- commitlint --edit "$commit_msg_file"
