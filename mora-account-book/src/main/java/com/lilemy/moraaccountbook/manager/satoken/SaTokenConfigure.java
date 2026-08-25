@@ -6,6 +6,7 @@ import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
 import com.lilemy.moraaccountbook.model.enums.SysUserRoleEnum;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -30,6 +31,6 @@ public class SaTokenConfigure implements WebMvcConfigurer {
 
             // 匹配所有 admin 开头的路径，要求登录用户必须有为管理员
             SaRouter.match("/*/admin/**", r -> StpUtil.checkRole(SysUserRoleEnum.ADMIN.toString()));
-        })).addPathPatterns("/**");
+        })).addPathPatterns("/**").excludeHttpMethods(HttpMethod.OPTIONS);
     }
 }

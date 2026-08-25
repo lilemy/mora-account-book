@@ -94,7 +94,7 @@ public class PageQuery implements Serializable {
         sortFieldBy = StrUtil.toUnderlineCase(sortFieldBy);
 
         // 兼容前端排序类型
-        String orderDirection = StringUtils.replaceEach(sortOrder, new String[]{"ascending", "descending"}, new String[]{"asc", "desc"});
+        String orderDirection = StringUtils.replaceEach(sortOrder, new String[]{"ascend", "descend"}, new String[]{"asc", "desc"});
 
         String[] sortFieldArr = sortFieldBy.split(",");
         String[] sortOrderArr = orderDirection.split(",");
