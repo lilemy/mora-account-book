@@ -64,3 +64,12 @@ sa-token:
   token-style: uuid
   # 是否输出操作日志
   is-log: true
+
+# 对象存储配置
+oss:
+  s3:
+    endpoint: http://localhost:9000
+    region: us-east-1
+    bucket-name: mora-account-book
+    access-key: <your-access-key>
+    secret-key: <your-secret-key>

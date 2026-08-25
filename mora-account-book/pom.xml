@@ -28,6 +28,8 @@
         <mybatis-flex.version>1.11.8</mybatis-flex.version>
         <!-- 安全认证与加密相关依赖版本 -->
         <sa-token.version>1.46.0</sa-token.version>
+        <!-- OSS 配置 -->
+        <aws.sdk.version>2.48.1</aws.sdk.version>
         <!-- 接口文档版本 -->
         <knife4j.version>4.5.0</knife4j.version>
         <!-- 通用工具相关依赖版本 -->
@@ -108,6 +110,13 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
+        </dependency>
+
+        <!--  AWS SDK for Java 2.x  -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>${aws.sdk.version}</version>
         </dependency>
 
         <!-- 接口文档 -->
