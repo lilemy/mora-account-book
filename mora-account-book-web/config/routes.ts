@@ -29,12 +29,13 @@ export default [
     routes: [
       {
         path: '/admin',
-        redirect: '/admin/sub-page',
+        redirect: '/admin/user',
       },
       {
-        path: '/admin/sub-page',
-        name: '二级管理页',
-        component: './Admin',
+        path: '/admin/user',
+        name: '用户管理',
+        icon: 'table',
+        component: './admin/user',
       },
     ],
   },

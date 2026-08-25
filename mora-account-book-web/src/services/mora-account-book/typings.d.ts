@@ -115,17 +115,29 @@ declare namespace API {
   };
 
   type SysUserManageVO = {
+    /** id */
     id?: number;
+    /** 用户昵称 */
     userName?: string;
+    /** 用户头像 */
     userAvatar?: string;
+    /** 用户简介 */
     userProfile?: string;
+    /** 用户手机号 */
     userPhone?: string;
+    /** 用户邮箱 */
     userEmail?: string;
+    /** 用户性别(0未填写 1男 2女) */
     userGender?: "UNKNOWN" | "MALE" | "FEMALE";
+    /** 用户角色(0用户 1管理员) */
     userRole?: "USER" | "ADMIN";
+    /** 备注 */
     remark?: string;
+    /** 编辑时间 */
     editTime?: string;
+    /** 创建时间 */
     createTime?: string;
+    /** 更新时间 */
     updateTime?: string;
   };
 
