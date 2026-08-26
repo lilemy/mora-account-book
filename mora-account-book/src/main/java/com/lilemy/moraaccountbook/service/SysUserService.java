@@ -11,6 +11,7 @@ import com.lilemy.moraaccountbook.model.vo.user.SysLoginUserVO;
 import com.lilemy.moraaccountbook.model.vo.user.SysUserManageVO;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 用户 服务层。
@@ -44,6 +45,13 @@ public interface SysUserService extends IService<SysUser> {
     Boolean userLogout();
 
     /**
+     * 获取已登录用户信息（登录缓存）
+     *
+     * @return 登录用户信息
+     */
+    SysUser getLoginUserCache();
+
+    /**
      * 获取已登录用户信息
      *
      * @return 登录用户信息
@@ -65,6 +73,15 @@ public interface SysUserService extends IService<SysUser> {
      * @return 是否更新成功
      */
     Boolean updateSysUser(UserUpdateRequest request);
+
+    /**
+     * 上传并更新用户头像
+     *
+     * @param sysUser 用户
+     * @param file    头像文件
+     * @return 是否上传成功
+     */
+    Boolean uploadAvatar(SysUser sysUser, MultipartFile file);
 
     /**
      * 删除用户

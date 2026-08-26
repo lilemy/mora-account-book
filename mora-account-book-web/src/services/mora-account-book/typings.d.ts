@@ -141,6 +141,12 @@ declare namespace API {
     updateTime?: string;
   };
 
+  type uploadAvatarByAdminParams = {
+    id: number;
+    /** 头像文件 */
+    file: Blob;
+  };
+
   type UserLoginRequest = {
     /** 用户手机号 */
     userPhone: string;

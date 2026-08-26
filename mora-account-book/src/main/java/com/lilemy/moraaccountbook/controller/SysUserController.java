@@ -5,6 +5,8 @@ import com.lilemy.moraaccountbook.common.BaseResponse;
 import com.lilemy.moraaccountbook.common.PageQuery;
 import com.lilemy.moraaccountbook.common.PageResult;
 import com.lilemy.moraaccountbook.common.ResultUtils;
+import com.lilemy.moraaccountbook.exception.ErrorCode;
+import com.lilemy.moraaccountbook.exception.ThrowUtils;
 import com.lilemy.moraaccountbook.model.dto.user.UserLoginRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserRegisterRequest;
@@ -16,8 +18,10 @@ import com.lilemy.moraaccountbook.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 用户 控制层。
@@ -56,8 +60,28 @@ public class SysUserController {
     @Operation(summary = "获取当前登录用户")
     @GetMapping("/getLoginUser")
     public BaseResponse<SysLoginUserVO> getLoginUser() {
-        SysUser loginUser = sysUserService.getLoginUser();
+        SysUser loginUser = sysUserService.getLoginUserCache();
         return ResultUtils.success(sysUserService.getLoginUserVO(loginUser));
+    }
+
+    @Operation(summary = "上传并修改用户头像")
+    @PostMapping(value = "/uploadAvatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<Boolean> uploadAvatar(@RequestParam("file") MultipartFile file) {
+        // 1.文件校验
+        ThrowUtils.throwIf(file.isEmpty(), ErrorCode.PARAMS_ERROR, "上传的文件为空");
+        // 2.获取登录用户
+        SysUser loginUser = sysUserService.getLoginUser();
+        return ResultUtils.success(sysUserService.uploadAvatar(loginUser, file));
+    }
+
+    @Operation(summary = "上传并修改用户头像（管理员）")
+    @PostMapping(value = "/admin/uploadAvatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<Boolean> uploadAvatarByAdmin(Long id, @RequestParam("file") MultipartFile file) {
+        // 1.参数校验
+        ThrowUtils.throwIf(id == null || file.isEmpty(), ErrorCode.PARAMS_ERROR);
+        // 2.查询用户
+        SysUser sysUser = sysUserService.getById(id);
+        return ResultUtils.success(sysUserService.uploadAvatar(sysUser, file));
     }
 
     @Operation(summary = "获取用户信息（管理员）")

@@ -22,4 +22,9 @@ public interface UserConstant {
      * 用户默认昵称
      */
     String USER_DEFAULT_NAME = "小摩拉";
+
+    /**
+     * 用户头像前缀
+     */
+    String USER_AVATAR_PREFIX = "user_avatar";
 }

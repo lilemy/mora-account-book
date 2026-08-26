@@ -63,6 +63,27 @@ export async function getSysUserManageVoPage(
   );
 }
 
+/** 上传并修改用户头像（管理员） POST /sysUser/admin/uploadAvatar */
+export async function uploadAvatarByAdmin(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.uploadAvatarByAdminParams,
+  options?: { [key: string]: any }
+) {
+  const { id, file, ...queryParams } = params;
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return request<API.BaseResponseBoolean>("/sysUser/admin/uploadAvatar", {
+    method: "POST",
+    params: {
+      id,
+      ...queryParams,
+    },
+    data: formData,
+    ...(options || {}),
+  });
+}
+
 /** 获取当前登录用户 GET /sysUser/getLoginUser */
 export async function getLoginUser(options?: { [key: string]: any }) {
   return request<API.BaseResponseSysLoginUserVO>("/sysUser/getLoginUser", {
@@ -105,6 +126,14 @@ export async function userRegister(
       "Content-Type": "application/json",
     },
     data: body,
+    ...(options || {}),
+  });
+}
+
+/** 上传并修改用户头像 POST /sysUser/uploadAvatar */
+export async function uploadAvatar(options?: { [key: string]: any }) {
+  return request<API.BaseResponseBoolean>("/sysUser/uploadAvatar", {
+    method: "POST",
     ...(options || {}),
   });
 }

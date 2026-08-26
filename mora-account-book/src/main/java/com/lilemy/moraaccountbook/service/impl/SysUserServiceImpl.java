@@ -8,6 +8,7 @@ import com.lilemy.moraaccountbook.common.PageResult;
 import com.lilemy.moraaccountbook.constant.UserConstant;
 import com.lilemy.moraaccountbook.exception.ErrorCode;
 import com.lilemy.moraaccountbook.exception.ThrowUtils;
+import com.lilemy.moraaccountbook.manager.oss.OssService;
 import com.lilemy.moraaccountbook.mapper.SysUserMapper;
 import com.lilemy.moraaccountbook.model.dto.user.UserLoginRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserQueryRequest;
@@ -22,9 +23,11 @@ import com.lilemy.moraaccountbook.service.SysUserService;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 
@@ -36,6 +39,9 @@ import java.util.Objects;
  */
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
+
+    @Resource
+    private OssService ossService;
 
     @Override
     public Long userRegister(UserRegisterRequest request) {
@@ -94,12 +100,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public SysUser getLoginUser() {
+    public SysUser getLoginUserCache() {
         // 先判断是否已登录
         StpUtil.checkLogin();
         // 获取登录用户
         Object userObj = StpUtil.getTokenSession().get(UserConstant.USER_LOGIN_STATE);
         SysUser sysUser = (SysUser) userObj;
+        ThrowUtils.throwIf(sysUser == null, ErrorCode.NOT_LOGIN_ERROR);
+        return sysUser;
+    }
+
+    @Override
+    public SysUser getLoginUser() {
+        // 获取登录用户
+        SysUser loginUserCache = this.getLoginUserCache();
+        ThrowUtils.throwIf(loginUserCache == null, ErrorCode.NOT_LOGIN_ERROR);
+        // 获取登录用户最新数据
+        SysUser sysUser = this.getById(loginUserCache.getId());
         ThrowUtils.throwIf(sysUser == null, ErrorCode.NOT_LOGIN_ERROR);
         return sysUser;
     }
@@ -127,6 +144,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR, "更新失败");
         // 3.踢出登录
         StpUtil.kickout(id);
+        return true;
+    }
+
+    @Override
+    public Boolean uploadAvatar(SysUser sysUser, MultipartFile file) {
+        // 1.参数校验
+        ThrowUtils.throwIf(sysUser == null, ErrorCode.NOT_FOUND_ERROR, "用户不存在");
+        ThrowUtils.throwIf(file.isEmpty(), ErrorCode.PARAMS_ERROR, "上传的文件为空");
+        // 2.记录旧图片地址
+        String oldUserAvatar = sysUser.getUserAvatar();
+        // 3.上传文件
+        String userAvatar = ossService.uploadFile(UserConstant.USER_AVATAR_PREFIX, file);
+        // 4.更新用户数据
+        SysUser updateUser = new SysUser();
+        updateUser.setId(sysUser.getId());
+        updateUser.setUserAvatar(userAvatar);
+        boolean result = this.updateById(updateUser);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR, "上传失败");
+        // 5.删除旧头像
+        if (StringUtils.isNotBlank(oldUserAvatar) && !oldUserAvatar.equals(UserConstant.USER_DEFAULT_AVATAR_URL)) {
+            ossService.deleteFileByUrl(oldUserAvatar);
+        }
+        // 6.返回结果
         return true;
     }
 

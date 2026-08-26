@@ -10,6 +10,10 @@ spring:
     name: mora-account-book
   profiles:
     active: dev
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 50MB
 
 # 日志配置
 logging:
