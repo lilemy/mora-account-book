@@ -19,12 +19,14 @@ import com.lilemy.moraaccountbook.model.enums.SysUserGenderEnum;
 import com.lilemy.moraaccountbook.model.enums.SysUserRoleEnum;
 import com.lilemy.moraaccountbook.model.vo.user.SysLoginUserVO;
 import com.lilemy.moraaccountbook.model.vo.user.SysUserManageVO;
+import com.lilemy.moraaccountbook.service.AccountBookService;
 import com.lilemy.moraaccountbook.service.SysUserService;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +44,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Resource
     private OssService ossService;
+
+    @Lazy
+    @Resource
+    private AccountBookService accountBookService;
 
     @Override
     public Long userRegister(UserRegisterRequest request) {
@@ -66,8 +72,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUser.setUserAvatar(UserConstant.USER_DEFAULT_AVATAR_URL);
         boolean save = this.save(sysUser);
         ThrowUtils.throwIf(!save, ErrorCode.OPERATION_ERROR, "注册失败");
-        // 5.返回结果
-        return sysUser.getId();
+        // 5.创建默认账本
+        Long userId = sysUser.getId();
+        accountBookService.initUserAccountBook(userId);
+        // 6.返回结果
+        return userId;
     }
 
     @Override
@@ -87,7 +96,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 4.记录用户登录态
         StpUtil.login(sysUser.getId());
         StpUtil.getTokenSession().set(UserConstant.USER_LOGIN_STATE, sysUser);
-        // 5.获取脱敏后的用户信息
+        // 5.校验是否至少有一个账本，没有则初始化
+        accountBookService.initUserAccountBook(sysUser.getId());
+        // 6.获取脱敏后的用户信息
         return this.getLoginUserVO(sysUser);
     }
 

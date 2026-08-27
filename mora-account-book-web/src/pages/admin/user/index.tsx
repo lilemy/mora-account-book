@@ -37,15 +37,14 @@ const UserTableList: React.FC = () => {
       dataIndex: 'userName',
       render: (dom, entity) => {
         return (
-          <Button
-            type="link"
+          <a
             onClick={() => {
               setCurrentRow(entity);
               setShowDetail(true);
             }}
           >
             {dom}
-          </Button>
+          </a>
         );
       },
     },
@@ -195,7 +194,7 @@ const UserTableList: React.FC = () => {
       <ProTable<API.SysUserManageVO, API.PageResultSysUserManageVO>
         headerTitle={'用户管理'}
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         search={{
           labelWidth: 120,
         }}

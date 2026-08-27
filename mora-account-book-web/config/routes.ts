@@ -34,8 +34,14 @@ export default [
       {
         path: '/admin/user',
         name: '用户管理',
-        icon: 'table',
+        icon: 'user',
         component: './admin/user',
+      },
+      {
+        path: '/admin/book',
+        name: '账本管理',
+        icon: 'wallet',
+        component: './admin/book',
       },
     ],
   },

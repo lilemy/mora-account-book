@@ -13,5 +13,7 @@ import RightContent from './RightContent';
  */
 export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as OfflineBanner } from './OfflineBanner';
+export type { UserSelectOption, UserSelectProps } from './UserSelect';
+export { default as UserSelect, useUserSelectProps } from './UserSelect';
 
 export { Footer, RightContent };
