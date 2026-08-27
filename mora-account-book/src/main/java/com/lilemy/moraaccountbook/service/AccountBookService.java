@@ -2,10 +2,12 @@ package com.lilemy.moraaccountbook.service;
 
 import com.lilemy.moraaccountbook.common.PageQuery;
 import com.lilemy.moraaccountbook.common.PageResult;
-import com.lilemy.moraaccountbook.model.dto.book.AccountBookQueryRequest;
+import com.lilemy.moraaccountbook.model.dto.book.AccountBookManageQueryRequest;
+import com.lilemy.moraaccountbook.model.dto.book.AccountBookUserQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookUpdateRequest;
 import com.lilemy.moraaccountbook.model.entity.AccountBook;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookManageVO;
+import com.lilemy.moraaccountbook.model.vo.book.AccountBookUserVO;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
 
@@ -25,13 +27,22 @@ public interface AccountBookService extends IService<AccountBook> {
     void initUserAccountBook(Long userId);
 
     /**
+     * 获取用户账本分页
+     *
+     * @param request   查询请求
+     * @param pageQuery 分页查询
+     * @return 用户账本分页
+     */
+    PageResult<AccountBookUserVO> getUserAccountBookPage(AccountBookUserQueryRequest request, PageQuery pageQuery);
+
+    /**
      * 获取账本管理封装信息分页
      *
      * @param request   查询请求
      * @param pageQuery 分页查询
      * @return 账本管理封装信息分页
      */
-    PageResult<AccountBookManageVO> getAccountBookManageVOPage(AccountBookQueryRequest request, PageQuery pageQuery);
+    PageResult<AccountBookManageVO> getAccountBookManageVOPage(AccountBookManageQueryRequest request, PageQuery pageQuery);
 
     /**
      * 获取查询条件
@@ -40,7 +51,7 @@ public interface AccountBookService extends IService<AccountBook> {
      * @param pageQuery 分页查询
      * @return 查询条件
      */
-    QueryWrapper getQueryWrapper(AccountBookQueryRequest request, PageQuery pageQuery);
+    QueryWrapper getQueryWrapper(AccountBookManageQueryRequest request, PageQuery pageQuery);
 
     /**
      * 获取账本管理封装信息

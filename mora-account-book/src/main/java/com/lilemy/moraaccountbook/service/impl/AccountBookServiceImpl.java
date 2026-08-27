@@ -9,8 +9,9 @@ import com.lilemy.moraaccountbook.exception.BusinessException;
 import com.lilemy.moraaccountbook.exception.ErrorCode;
 import com.lilemy.moraaccountbook.exception.ThrowUtils;
 import com.lilemy.moraaccountbook.mapper.AccountBookMapper;
-import com.lilemy.moraaccountbook.model.dto.book.AccountBookQueryRequest;
+import com.lilemy.moraaccountbook.model.dto.book.AccountBookManageQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookUpdateRequest;
+import com.lilemy.moraaccountbook.model.dto.book.AccountBookUserQueryRequest;
 import com.lilemy.moraaccountbook.model.entity.AccountBook;
 import com.lilemy.moraaccountbook.model.entity.AccountBookMember;
 import com.lilemy.moraaccountbook.model.entity.SysUser;
@@ -20,6 +21,7 @@ import com.lilemy.moraaccountbook.model.enums.AccountBookStatusEnum;
 import com.lilemy.moraaccountbook.model.enums.AccountBookTypeEnum;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookManageMemberVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookManageVO;
+import com.lilemy.moraaccountbook.model.vo.book.AccountBookUserVO;
 import com.lilemy.moraaccountbook.service.AccountBookMemberService;
 import com.lilemy.moraaccountbook.service.AccountBookService;
 import com.lilemy.moraaccountbook.service.SysUserService;
@@ -36,6 +38,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.mybatisflex.core.query.QueryMethods.column;
 
 /**
  * 账本 服务层实现。
@@ -101,7 +105,58 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
     }
 
     @Override
-    public PageResult<AccountBookManageVO> getAccountBookManageVOPage(AccountBookQueryRequest request, PageQuery pageQuery) {
+    public PageResult<AccountBookUserVO> getUserAccountBookPage(AccountBookUserQueryRequest request, PageQuery pageQuery) {
+        // 1.获取当前登录用户
+        SysUser loginUser = sysUserService.getLoginUser();
+        // 2.构建用户账本联表查询
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(
+                        column(AccountBook::getId),
+                        column(AccountBook::getOwnerId),
+                        column(SysUser::getUserPhone).as(AccountBookUserVO::getOwnerPhone),
+                        column(SysUser::getUserName).as(AccountBookUserVO::getOwnerName),
+                        column(AccountBook::getBookName),
+                        column(AccountBook::getBookType),
+                        column(AccountBook::getIcon),
+                        column(AccountBook::getColor),
+                        column(AccountBook::getDescription),
+                        column(AccountBook::getStatus),
+                        column(AccountBook::getCreateTime),
+                        column(AccountBookMember::getMemberRole),
+                        column(AccountBookMember::getIsDefault),
+                        column(AccountBookMember::getJoinTime)
+                )
+                .from(AccountBook.class)
+                .innerJoin(AccountBookMember.class)
+                .on(AccountBookMember::getBookId, AccountBook::getId)
+                .leftJoin(SysUser.class)
+                .on(SysUser::getId, AccountBook::getOwnerId)
+                .where(AccountBookMember::getUserId).eq(loginUser.getId())
+                .and(AccountBookMember::getStatus).eq(AccountBookMemberStatusEnum.NORMAL);
+
+        // 3.添加筛选条件
+        if (request != null) {
+            queryWrapper.and(AccountBook::getBookName).like(request.getBookName(), StringUtils::isNotBlank)
+                    .and(AccountBook::getBookType).eq(request.getBookType(), Objects::nonNull)
+                    .and(AccountBook::getStatus).eq(request.getStatus(), Objects::nonNull);
+        }
+
+        // 4.默认账本优先，其次正常账本优先；加入时间和账本 ID 用于保证分页顺序稳定
+        queryWrapper.orderBy(AccountBookMember::getIsDefault).desc()
+                .orderBy(AccountBook::getStatus).asc()
+                .orderBy(AccountBookMember::getJoinTime).desc()
+                .orderBy(AccountBook::getId).desc();
+
+        // 5.分页查询并返回封装结果
+        PageQuery actualPageQuery = pageQuery == null ? new PageQuery() : pageQuery;
+        Page<AccountBookUserVO> accountBookPage = getMapper().paginateAs(
+                actualPageQuery.build(), queryWrapper, AccountBookUserVO.class
+        );
+        return PageResult.build(accountBookPage);
+    }
+
+    @Override
+    public PageResult<AccountBookManageVO> getAccountBookManageVOPage(AccountBookManageQueryRequest request, PageQuery pageQuery) {
         // 1.构建查询条件
         QueryWrapper queryWrapper = this.getQueryWrapper(request, pageQuery);
         // 2.分页查询
@@ -132,7 +187,7 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
     }
 
     @Override
-    public QueryWrapper getQueryWrapper(AccountBookQueryRequest request, PageQuery pageQuery) {
+    public QueryWrapper getQueryWrapper(AccountBookManageQueryRequest request, PageQuery pageQuery) {
         QueryWrapper queryWrapper = new QueryWrapper();
         if (pageQuery != null) {
             queryWrapper = pageQuery.buildOrderQuery();

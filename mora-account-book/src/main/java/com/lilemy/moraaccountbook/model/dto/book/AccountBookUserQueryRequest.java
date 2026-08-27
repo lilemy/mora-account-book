@@ -16,16 +16,10 @@ import java.io.Serializable;
  */
 @Data
 @Schema(description = "账本查询请求")
-public class AccountBookQueryRequest implements Serializable {
+public class AccountBookUserQueryRequest implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -6796141321264833406L;
-
-    /**
-     * 账本所有者用户 ID
-     */
-    @Schema(description = "账本所有者用户 ID")
-    private Long ownerId;
 
     /**
      * 账本名称
