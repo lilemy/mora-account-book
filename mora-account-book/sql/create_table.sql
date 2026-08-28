@@ -115,3 +115,118 @@ comment on column account_book_member.status is '成员状态(0正常 1已移除
 comment on column account_book_member.join_time is '加入账本时间';
 comment on column account_book_member.create_time is '创建时间';
 comment on column account_book_member.update_time is '更新时间';
+
+-- 分类模板表
+drop table if exists category_template;
+create table if not exists category_template
+(
+    id            bigint primary key,
+    template_code varchar(32)                         not null,
+    template_name varchar(64)                         not null,
+    is_default    boolean   default false             not null,
+    status        smallint  default 0                 not null,
+    create_time   timestamp default CURRENT_TIMESTAMP not null,
+    update_time   timestamp default CURRENT_TIMESTAMP not null,
+    constraint uk_category_template_code unique (template_code),
+    constraint ck_category_template_status check (status in (0, 1))
+);
+
+create unique index uk_category_template_default_active
+    on category_template (is_default)
+    where is_default and status = 0;
+
+-- 分类模板项表
+drop table if exists category_template_item;
+create table if not exists category_template_item
+(
+    id             bigint primary key,
+    template_id    bigint                                not null,
+    parent_id      bigint      default 0                 not null,
+    category_name  varchar(64)                           not null,
+    category_type  smallint                              not null,
+    category_level smallint                              not null,
+    icon           varchar(64) default 'container'       not null,
+    color          varchar(16) default '#64bbcf'         not null,
+    sort_order     integer     default 0                 not null,
+    status         smallint    default 0                 not null,
+    create_time    timestamp   default CURRENT_TIMESTAMP not null,
+    update_time    timestamp   default CURRENT_TIMESTAMP not null,
+    constraint ck_category_template_item_type check (category_type in (0, 1)),
+    constraint ck_category_template_item_level check (
+        (category_level = 1 and parent_id = 0) or
+        (category_level = 2 and parent_id > 0)
+        ),
+    constraint ck_category_template_item_status check (status in (0, 1))
+);
+
+create index idx_category_template_item_tree
+    on category_template_item (template_id, category_type, status, parent_id, sort_order);
+create unique index uk_category_template_item_root_name
+    on category_template_item (template_id, category_type, category_name)
+    where category_level = 1 and status = 0;
+create unique index uk_category_template_item_child_name
+    on category_template_item (template_id, parent_id, category_name)
+    where category_level = 2 and status = 0;
+
+-- 账本分类表
+drop table if exists account_book_category;
+create table if not exists account_book_category
+(
+    id             bigint primary key,
+    book_id        bigint                                not null,
+    parent_id      bigint      default 0                 not null,
+    category_name  varchar(64)                           not null,
+    category_type  smallint                              not null,
+    category_level smallint                              not null,
+    icon           varchar(64) default 'container'       not null,
+    color          varchar(16) default '#64bbcf'         not null,
+    sort_order     integer     default 0                 not null,
+    create_time    timestamp   default CURRENT_TIMESTAMP not null,
+    update_time    timestamp   default CURRENT_TIMESTAMP not null,
+    constraint ck_account_book_category_level check (
+        (category_level = 1 and parent_id = 0) or
+        (category_level = 2 and parent_id > 0)
+        )
+);
+
+create index idx_account_book_category_tree
+    on account_book_category (book_id, category_type, parent_id, sort_order);
+
+-- 分类模板表注释
+comment on table category_template is '分类模板';
+comment on column category_template.id is '分类模板 ID';
+comment on column category_template.template_code is '模板编码';
+comment on column category_template.template_name is '模板名称';
+comment on column category_template.is_default is '是否为默认模板';
+comment on column category_template.status is '模板状态(0启用 1停用)';
+comment on column category_template.create_time is '创建时间';
+comment on column category_template.update_time is '更新时间';
+
+-- 分类模板项表注释
+comment on table category_template_item is '分类模板项';
+comment on column category_template_item.id is '分类模板项 ID';
+comment on column category_template_item.template_id is '分类模板 ID';
+comment on column category_template_item.parent_id is '父分类模板项 ID，一级分类为 0';
+comment on column category_template_item.category_name is '分类名称';
+comment on column category_template_item.category_type is '分类类型(0支出 1收入 2转账)';
+comment on column category_template_item.category_level is '分类层级(1一级 2二级)';
+comment on column category_template_item.icon is '分类图标标识';
+comment on column category_template_item.color is '分类颜色';
+comment on column category_template_item.sort_order is '排序值，值越小越靠前';
+comment on column category_template_item.status is '模板项状态(0启用 1停用)';
+comment on column category_template_item.create_time is '创建时间';
+comment on column category_template_item.update_time is '更新时间';
+
+-- 账本分类表注释
+comment on table account_book_category is '账本分类';
+comment on column account_book_category.id is '账本分类 ID';
+comment on column account_book_category.book_id is '账本 ID';
+comment on column account_book_category.parent_id is '父分类 ID，一级分类为 0';
+comment on column account_book_category.category_name is '分类名称';
+comment on column account_book_category.category_type is '分类类型(0支出 1收入 2转账)';
+comment on column account_book_category.category_level is '分类层级(1一级 2二级)';
+comment on column account_book_category.icon is '分类图标标识';
+comment on column account_book_category.color is '分类颜色';
+comment on column account_book_category.sort_order is '排序值，值越小越靠前';
+comment on column account_book_category.create_time is '创建时间';
+comment on column account_book_category.update_time is '更新时间';

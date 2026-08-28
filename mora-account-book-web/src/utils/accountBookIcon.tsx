@@ -3,6 +3,7 @@ import {
   BankOutlined,
   CarOutlined,
   CoffeeOutlined,
+  ContainerOutlined,
   CreditCardOutlined,
   FundOutlined,
   GiftOutlined,
@@ -55,6 +56,7 @@ export const getAccountBookIconConfig = () => {
     { value: 'insurance', label: '保险保障', component: InsuranceOutlined },
     { value: 'fund', label: '投资理财', component: FundOutlined },
     { value: 'pie-chart', label: '财务分析', component: PieChartOutlined },
+    { value: 'container', label: '财务分析', component: ContainerOutlined },
   ] as const;
 
   const iconMap = new Map<string, (typeof icons)[number]>(
