@@ -21,4 +21,17 @@ public enum AccountBookCategoryLevelEnum {
     private final int code;
 
     private final String desc;
+
+    /**
+     * 根据父级id获取分类层级
+     *
+     * @param parentId 父id
+     * @return 分类分层
+     */
+    public static AccountBookCategoryLevelEnum getLevelByParent(Long parentId) {
+        if (parentId == null || parentId == 0) {
+            return LEVEL_1;
+        }
+        return LEVEL_2;
+    }
 }

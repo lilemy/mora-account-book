@@ -1,0 +1,72 @@
+package com.lilemy.moraaccountbook.model.dto.category;
+
+import com.lilemy.moraaccountbook.model.enums.AccountBookCategoryTypeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+import java.io.Serial;
+import java.io.Serializable;
+
+/**
+ * 分类模板项更新请求
+ *
+ * @author lilemy
+ * @date 2026-08-28
+ */
+@Data
+@Schema(description = "分类模板项更新请求")
+public class CategoryTemplateItemUpdateRequest implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -2333956651885576764L;
+
+    /**
+     * 分类模板项 ID
+     */
+    @NotNull(message = "分类模板项 ID 不能为空")
+    @Schema(description = "分类模板项 ID")
+    private Long id;
+
+    /**
+     * 分类模板 ID
+     */
+    @Schema(description = "分类模板 ID")
+    private Long templateId;
+
+    /**
+     * 父分类模板项 ID，一级分类为 0
+     */
+    @Schema(description = "父分类模板项 ID，一级分类为 0")
+    private Long parentId;
+
+    /**
+     * 分类名称
+     */
+    @Schema(description = "分类名称")
+    private String categoryName;
+
+    /**
+     * 分类类型(0支出 1收入 2转账)
+     */
+    @Schema(description = "分类类型")
+    private AccountBookCategoryTypeEnum categoryType;
+
+    /**
+     * 分类图标标识
+     */
+    @Schema(description = "分类图标标识")
+    private String icon;
+
+    /**
+     * 分类颜色
+     */
+    @Schema(description = "分类颜色")
+    private String color;
+
+    /**
+     * 排序值，值越小越靠前
+     */
+    @Schema(description = "排序值，值越小越靠前")
+    private Integer sortOrder;
+}

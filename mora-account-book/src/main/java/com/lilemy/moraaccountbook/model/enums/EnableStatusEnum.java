@@ -21,4 +21,11 @@ public enum EnableStatusEnum {
     private final int code;
 
     private final String desc;
+
+    /**
+     * 切换状态
+     */
+    public static EnableStatusEnum changeStatus(EnableStatusEnum oldStatus) {
+        return oldStatus == ENABLE ? DISABLE : ENABLE;
+    }
 }

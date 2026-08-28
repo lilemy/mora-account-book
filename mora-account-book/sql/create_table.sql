@@ -128,6 +128,7 @@ create table if not exists category_template
     create_time   timestamp default CURRENT_TIMESTAMP not null,
     update_time   timestamp default CURRENT_TIMESTAMP not null,
     constraint uk_category_template_code unique (template_code),
+    constraint uk_category_template_name unique (template_name),
     constraint ck_category_template_status check (status in (0, 1))
 );
 
@@ -151,7 +152,6 @@ create table if not exists category_template_item
     status         smallint    default 0                 not null,
     create_time    timestamp   default CURRENT_TIMESTAMP not null,
     update_time    timestamp   default CURRENT_TIMESTAMP not null,
-    constraint ck_category_template_item_type check (category_type in (0, 1)),
     constraint ck_category_template_item_level check (
         (category_level = 1 and parent_id = 0) or
         (category_level = 2 and parent_id > 0)
@@ -208,7 +208,7 @@ comment on column category_template_item.id is '分类模板项 ID';
 comment on column category_template_item.template_id is '分类模板 ID';
 comment on column category_template_item.parent_id is '父分类模板项 ID，一级分类为 0';
 comment on column category_template_item.category_name is '分类名称';
-comment on column category_template_item.category_type is '分类类型(0支出 1收入 2转账)';
+comment on column category_template_item.category_type is '分类类型(1收入 2支出 3转账)';
 comment on column category_template_item.category_level is '分类层级(1一级 2二级)';
 comment on column category_template_item.icon is '分类图标标识';
 comment on column category_template_item.color is '分类颜色';
@@ -223,7 +223,7 @@ comment on column account_book_category.id is '账本分类 ID';
 comment on column account_book_category.book_id is '账本 ID';
 comment on column account_book_category.parent_id is '父分类 ID，一级分类为 0';
 comment on column account_book_category.category_name is '分类名称';
-comment on column account_book_category.category_type is '分类类型(0支出 1收入 2转账)';
+comment on column account_book_category.category_type is '分类类型(1收入 2支出 3转账)';
 comment on column account_book_category.category_level is '分类层级(1一级 2二级)';
 comment on column account_book_category.icon is '分类图标标识';
 comment on column account_book_category.color is '分类颜色';
