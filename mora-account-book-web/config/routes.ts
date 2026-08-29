@@ -43,6 +43,19 @@ export default [
         icon: 'wallet',
         component: './admin/book',
       },
+      {
+        path: '/admin/category-template',
+        name: '分类模板管理',
+        icon: 'container',
+        component: './admin/category',
+      },
+      {
+        path: '/admin/category-template/update/:id',
+        name: '更新分类模板',
+        icon: 'wallet',
+        component: './admin/category/update',
+        hideInMenu: true,
+      },
     ],
   },
   {

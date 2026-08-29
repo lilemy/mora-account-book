@@ -4,6 +4,8 @@ import com.lilemy.moraaccountbook.common.BaseResponse;
 import com.lilemy.moraaccountbook.common.PageQuery;
 import com.lilemy.moraaccountbook.common.PageResult;
 import com.lilemy.moraaccountbook.common.ResultUtils;
+import com.lilemy.moraaccountbook.exception.ErrorCode;
+import com.lilemy.moraaccountbook.exception.ThrowUtils;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookManageQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookUpdateRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookUserQueryRequest;
@@ -42,6 +44,7 @@ public class AccountBookController {
     @GetMapping("/admin/{id}")
     public BaseResponse<AccountBookManageVO> getAccountBookById(@PathVariable Long id) {
         AccountBook accountBook = accountBookService.getById(id);
+        ThrowUtils.throwIf(accountBook == null, ErrorCode.NOT_FOUND_ERROR, "账本不存在");
         return ResultUtils.success(accountBookService.getAccountBookManageVO(accountBook));
     }
 
