@@ -1,9 +1,13 @@
-import type { ProDescriptionsProps } from '@ant-design/pro-components';
-import { ProDescriptions } from '@ant-design/pro-components';
+import {
+  type ProColumns,
+  ProDescriptions,
+  type ProDescriptionsProps,
+  ProTable,
+} from '@ant-design/pro-components';
 import type { TableProps } from 'antd';
 import { App, Modal, Space, Table } from 'antd';
 import dayjs from 'dayjs';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getAccountBookById } from '@/services/mora-account-book/accountBookController';
 import { getAccountBookIconConfig } from '@/utils/accountBookIcon';
 
@@ -130,6 +134,46 @@ const memberColumns: TableProps<API.AccountBookManageMemberVO>['columns'] = [
   },
 ];
 
+const categoryColumns: ProColumns<API.AccountBookCategoryVO>[] = [
+  {
+    title: '分类名称',
+    dataIndex: 'categoryName',
+    key: 'categoryName',
+    render: (dom, entity) => {
+      return (
+        <Space>
+          {renderIcon(entity.icon, { style: { color: entity.color } })}
+          <div>{dom}</div>
+        </Space>
+      );
+    },
+  },
+  {
+    title: '分类类型',
+    dataIndex: 'categoryType',
+    key: 'categoryType',
+    valueEnum: {
+      INCOME: {
+        text: '收入',
+        status: 'Success',
+      },
+      EXPENSE: {
+        text: '支出',
+        status: 'Error',
+      },
+      TRANSFER: {
+        text: '转账',
+        status: 'Processing',
+      },
+    },
+  },
+  {
+    title: '排序值',
+    dataIndex: 'sortOrder',
+    valueType: 'digit',
+  },
+];
+
 const DetailModal = ({
   accountBookId,
   open,
@@ -221,6 +265,20 @@ const DetailModal = ({
                 hideOnSinglePage: true,
                 showSizeChanger: false,
               }}
+            />
+          </section>
+
+          <section style={{ minWidth: 0 }}>
+            <h3 style={{ fontSize: 16, margin: '0 0 16px' }}>
+              分类列表（{detail.categoryList?.length ?? 0}）
+            </h3>
+            <ProTable<API.AccountBookCategoryVO>
+              rowKey="id"
+              columns={categoryColumns}
+              dataSource={detail.categoryList ?? []}
+              pagination={false}
+              options={false}
+              search={false}
             />
           </section>
         </div>

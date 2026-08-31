@@ -1,7 +1,10 @@
 package com.lilemy.moraaccountbook.service;
 
-import com.mybatisflex.core.service.IService;
 import com.lilemy.moraaccountbook.model.entity.AccountBookCategory;
+import com.lilemy.moraaccountbook.model.vo.book.AccountBookCategoryVO;
+import com.mybatisflex.core.service.IService;
+
+import java.util.List;
 
 /**
  * 账本分类 服务层。
@@ -11,4 +14,26 @@ import com.lilemy.moraaccountbook.model.entity.AccountBookCategory;
  */
 public interface AccountBookCategoryService extends IService<AccountBookCategory> {
 
+    /**
+     * 根据模板初始化分类
+     *
+     * @param accountBookId 账本ID
+     */
+    void initCategoryByTemplate(Long accountBookId);
+
+    /**
+     * 根据账本ID获取分类列表
+     *
+     * @param accountBookId 账本ID
+     * @return 分类列表
+     */
+    List<AccountBookCategoryVO> getListByBook(Long accountBookId);
+
+    /**
+     * 构建分类树列表
+     *
+     * @param categoryList 分类列表
+     * @return 分类树列表
+     */
+    List<AccountBookCategoryVO> buildCategoryTreeList(List<AccountBookCategory> categoryList);
 }

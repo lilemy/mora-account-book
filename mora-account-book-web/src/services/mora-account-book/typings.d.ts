@@ -1,4 +1,27 @@
 declare namespace API {
+  type AccountBookCategoryVO = {
+    /** 账本分类 ID */
+    id?: number;
+    /** 账本 ID */
+    bookId?: number;
+    /** 父分类 ID，一级分类为 0 */
+    parentId?: number;
+    /** 分类名称 */
+    categoryName?: string;
+    /** 分类类型 */
+    categoryType?: "INCOME" | "EXPENSE" | "TRANSFER";
+    /** 分类层级 */
+    categoryLevel?: "LEVEL_1" | "LEVEL_2";
+    /** 分类图标标识 */
+    icon?: string;
+    /** 分类颜色 */
+    color?: string;
+    /** 排序值，值越小越靠前 */
+    sortOrder?: number;
+    /** 子分类列表 */
+    children?: AccountBookCategoryVO[];
+  };
+
   type AccountBookManageMemberVO = {
     /** 账本成员 ID */
     id?: number;
@@ -47,6 +70,8 @@ declare namespace API {
     updateTime?: string;
     /** 账本成员列表 */
     memberList?: AccountBookManageMemberVO[];
+    /** 账本分类列表 */
+    categoryList?: AccountBookCategoryVO[];
   };
 
   type AccountBookUpdateRequest = {

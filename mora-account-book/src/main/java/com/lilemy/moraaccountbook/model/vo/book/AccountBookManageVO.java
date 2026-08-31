@@ -106,4 +106,10 @@ public class AccountBookManageVO implements Serializable {
      */
     @Schema(description = "账本成员列表")
     private List<AccountBookManageMemberVO> memberList;
+
+    /**
+     * 账本分类列表
+     */
+    @Schema(description = "账本分类列表")
+    private List<AccountBookCategoryVO> categoryList;
 }

@@ -13,22 +13,25 @@ import com.lilemy.moraaccountbook.model.dto.book.AccountBookManageQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookUpdateRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookUserQueryRequest;
 import com.lilemy.moraaccountbook.model.entity.AccountBook;
+import com.lilemy.moraaccountbook.model.entity.AccountBookCategory;
 import com.lilemy.moraaccountbook.model.entity.AccountBookMember;
 import com.lilemy.moraaccountbook.model.entity.SysUser;
 import com.lilemy.moraaccountbook.model.enums.AccountBookMemberRoleEnum;
 import com.lilemy.moraaccountbook.model.enums.AccountBookMemberStatusEnum;
 import com.lilemy.moraaccountbook.model.enums.AccountBookStatusEnum;
 import com.lilemy.moraaccountbook.model.enums.AccountBookTypeEnum;
+import com.lilemy.moraaccountbook.model.vo.book.AccountBookCategoryVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookManageMemberVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookManageVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookUserVO;
+import com.lilemy.moraaccountbook.service.AccountBookCategoryService;
 import com.lilemy.moraaccountbook.service.AccountBookMemberService;
 import com.lilemy.moraaccountbook.service.AccountBookService;
 import com.lilemy.moraaccountbook.service.SysUserService;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -49,13 +52,12 @@ import static com.mybatisflex.core.query.QueryMethods.column;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, AccountBook> implements AccountBookService {
 
-    @Resource
-    private AccountBookMemberService accountBookMemberService;
-
-    @Resource
-    private SysUserService sysUserService;
+    private final SysUserService sysUserService;
+    private final AccountBookMemberService accountBookMemberService;
+    private final AccountBookCategoryService accountBookCategoryService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -101,7 +103,8 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
             log.error("用户：{}，初始化账本关联失败", userId);
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "初始化账本关联失败");
         }
-        // TODO 7.添加默认分类
+        // 7.添加默认分类
+        accountBookCategoryService.initCategoryByTemplate(accountBook.getId());
     }
 
     @Override
@@ -248,7 +251,10 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
                         .thenComparing(AccountBookManageMemberVO::getJoinTime))
                 .toList();
         accountBookManageVO.setMemberList(memberVOList);
-        // 7.返回封装对象
+        // 7.封装账本分类列表
+        List<AccountBookCategoryVO> categoryVOList = accountBookCategoryService.getListByBook(accountBook.getId());
+        accountBookManageVO.setCategoryList(categoryVOList);
+        // 8.返回封装对象
         return accountBookManageVO;
     }
 
@@ -284,6 +290,16 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
             List<Long> memberIds = bookMemberList.stream().map(AccountBookMember::getId).toList();
             boolean remove = accountBookMemberService.removeByIds(memberIds);
             ThrowUtils.throwIf(!remove, ErrorCode.OPERATION_ERROR, "账本关联删除失败");
+        }
+        // 5.查询账本分类关联
+        List<AccountBookCategory> bookCategoryList = accountBookCategoryService.queryChain()
+                .eq(AccountBookCategory::getBookId, id)
+                .list();
+        if (CollUtil.isNotEmpty(bookCategoryList)) {
+            // 6.删除账本分类关联
+            List<Long> categoryIds = bookCategoryList.stream().map(AccountBookCategory::getId).toList();
+            boolean remove = accountBookCategoryService.removeByIds(categoryIds);
+            ThrowUtils.throwIf(!remove, ErrorCode.OPERATION_ERROR, "账本分类关联删除失败");
         }
         return true;
     }
