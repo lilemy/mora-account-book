@@ -230,3 +230,62 @@ comment on column account_book_category.color is '分类颜色';
 comment on column account_book_category.sort_order is '排序值，值越小越靠前';
 comment on column account_book_category.create_time is '创建时间';
 comment on column account_book_category.update_time is '更新时间';
+
+-- 用户账户表
+-- 账户直接归属于用户，可被流水记录选择性关联。
+create table if not exists user_account
+(
+    id                   bigint primary key,
+    user_id              bigint                                   not null,
+    account_name         varchar(64)                              not null,
+    account_type         smallint                                 not null,
+    sub_account_name     varchar(128),
+    initial_balance      numeric(18, 2) default 0.00              not null,
+    current_balance      numeric(18, 2) default 0.00              not null,
+    credit_limit         numeric(18, 2),
+    credit_statement_day smallint,
+    credit_repayment_day smallint,
+    loan_direction       smallint,
+    loan_date            date,
+    repayment_date       date,
+    account_no_tail      varchar(4),
+    icon                 varchar(64)    default 'money'           not null,
+    is_default           boolean        default false             not null,
+    remark               varchar(512),
+    create_time          timestamp      default CURRENT_TIMESTAMP not null,
+    update_time          timestamp      default CURRENT_TIMESTAMP not null
+);
+
+-- 用户账户查询：按用户、状态筛选，并按排序值展示
+create index if not exists idx_user_account_user
+    on user_account (user_id);
+
+-- 用户按账户类型筛选账户
+create index if not exists idx_user_account_user_type
+    on user_account (user_id, account_type);
+
+-- 同一个用户只能有一个启用中的默认账户
+create unique index if not exists uk_user_account_default
+    on user_account (user_id)
+    where is_default;
+
+comment on table user_account is '用户账户';
+comment on column user_account.id is '账户 ID';
+comment on column user_account.user_id is '所属用户 ID';
+comment on column user_account.account_name is '账户名称';
+comment on column user_account.account_type is '账户类型：0资金账户，1信用账户，2充值账户，3理财账户，4借贷账户';
+comment on column user_account.sub_account_name is '子账户名称，银行名称或借贷人姓名';
+comment on column user_account.initial_balance is '初始余额或欠款';
+comment on column user_account.current_balance is '当前余额或欠款余额';
+comment on column user_account.credit_limit is '信用额度，仅信用账户使用';
+comment on column user_account.credit_statement_day is '信用账户出账日';
+comment on column user_account.credit_repayment_day is '信用账户还款日';
+comment on column user_account.loan_direction is '借贷方向：0借出，1借入，仅借贷账户使用';
+comment on column user_account.loan_date is '借贷发生日期，仅借贷账户使用';
+comment on column user_account.repayment_date is '计划还款日期，仅借贷账户使用';
+comment on column user_account.account_no_tail is '银行卡或信用卡卡号后四位';
+comment on column user_account.icon is '账户图标标识';
+comment on column user_account.is_default is '是否为用户默认账户';
+comment on column user_account.remark is '备注';
+comment on column user_account.create_time is '创建时间';
+comment on column user_account.update_time is '更新时间';

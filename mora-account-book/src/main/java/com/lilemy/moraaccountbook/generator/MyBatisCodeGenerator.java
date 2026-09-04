@@ -8,13 +8,13 @@ import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.dialect.JdbcTypeMapping;
 import com.zaxxer.hikari.HikariDataSource;
 
+import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -24,7 +24,7 @@ import java.util.Map;
 public class MyBatisCodeGenerator {
 
     // 需要生成的表名
-    private static final String[] TABLE_NAMES = {"category_template", "category_template_item", "account_book_category"};
+    private static final String[] TABLE_NAMES = {"user_account"};
 
     public static void main(String[] args) {
         // 获取数据源信息
