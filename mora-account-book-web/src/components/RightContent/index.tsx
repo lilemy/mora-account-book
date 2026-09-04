@@ -3,7 +3,7 @@ import { history, useModel } from '@umijs/max';
 import type { MenuProps } from 'antd';
 import { Spin } from 'antd';
 import React, { startTransition } from 'react';
-import { userLogout } from '@/services/mora-account-book/sysUserController';
+import { userLogout } from '@/services/mora-account-book/userController';
 import HeaderDropdown from '../HeaderDropdown';
 
 type GlobalHeaderRightProps = {

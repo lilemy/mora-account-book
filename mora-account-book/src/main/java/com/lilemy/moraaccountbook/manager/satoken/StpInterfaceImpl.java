@@ -3,7 +3,7 @@ package com.lilemy.moraaccountbook.manager.satoken;
 import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpUtil;
 import com.lilemy.moraaccountbook.constant.UserConstant;
-import com.lilemy.moraaccountbook.model.entity.SysUser;
+import com.lilemy.moraaccountbook.model.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class StpInterfaceImpl implements StpInterface {
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
         // 从当前登录用户信息中获取角色
-        SysUser user = (SysUser) StpUtil.getTokenSession().get(UserConstant.USER_LOGIN_STATE);
+        User user = (User) StpUtil.getTokenSession().get(UserConstant.USER_LOGIN_STATE);
         return Collections.singletonList(user.getUserRole().toString());
     }
 }

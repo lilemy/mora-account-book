@@ -10,7 +10,7 @@ import {
   OfflineBanner,
   RightContent,
 } from '@/components';
-import { getLoginUser } from '@/services/mora-account-book/sysUserController';
+import { getLoginUser } from '@/services/mora-account-book/userController';
 import { requestConfig } from './requestConfig';
 
 // Initialize dayjs plugins globally

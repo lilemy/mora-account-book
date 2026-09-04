@@ -19,5 +19,5 @@ declare const __APP_VERSION__: string;
  * 全局初始化状态
  */
 interface InitialState {
-  currentUser?: API.SysLoginUserVO;
+  currentUser?: API.LoginUserVO;
 }

@@ -11,10 +11,10 @@ import type { GetProp, UploadProps } from 'antd';
 import { Form, message, Spin, Upload } from 'antd';
 import React, { cloneElement, useCallback, useState } from 'react';
 import {
-  getSysUserById,
-  updateSysUser,
+  getUserById,
+  updateUser,
   uploadAvatarByAdmin,
-} from '@/services/mora-account-book/sysUserController';
+} from '@/services/mora-account-book/userController';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -29,7 +29,7 @@ const getBase64 = (file: FileType) =>
 type UpdateFormProps = {
   trigger?: React.ReactElement<any>;
   onOk?: () => void;
-  values: Partial<API.SysUserManageVO>;
+  values: Partial<API.UserManageVO>;
 };
 
 /**
@@ -39,13 +39,13 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ onOk, values, trigger }) => {
   const [form] = Form.useForm<API.UserUpdateRequest>();
   const [open, setOpen] = useState(false);
   const [loadingDetail, setLoadingDetail] = useState(false);
-  const [detail, setDetail] = useState<API.SysUserManageVO>();
+  const [detail, setDetail] = useState<API.UserManageVO>();
   const [avatarUrl, setAvatarUrl] = useState<string>();
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
   const { mutateAsync: saveUser, isPending: saving } = useMutation({
-    mutationFn: updateSysUser,
+    mutationFn: updateUser,
   });
 
   const onCancel = useCallback(() => {
@@ -67,7 +67,7 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ onOk, values, trigger }) => {
     form.resetFields();
 
     try {
-      const response = await getSysUserById({ id: values.id });
+      const response = await getUserById({ id: values.id });
       if (response.code !== 0 || !response.data) {
         messageApi.error('获取用户信息失败' + response.message).then();
       }

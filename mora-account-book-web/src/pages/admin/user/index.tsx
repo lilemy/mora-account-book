@@ -12,18 +12,18 @@ import {
 import { Button, Drawer, message, Popconfirm, Space } from 'antd';
 import React, { useRef, useState } from 'react';
 import {
-  deleteSysUser,
-  getSysUserManageVoPage,
-} from '@/services/mora-account-book/sysUserController';
+  deleteUser,
+  getUserManageVoPage,
+} from '@/services/mora-account-book/userController';
 import UpdateForm from './components/UpdateForm';
 
 const UserTableList: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [currentRow, setCurrentRow] = useState<API.SysUserManageVO>();
+  const [currentRow, setCurrentRow] = useState<API.UserManageVO>();
 
-  const columns: ProColumns<API.SysUserManageVO>[] = [
+  const columns: ProColumns<API.UserManageVO>[] = [
     {
       title: 'id',
       dataIndex: 'id',
@@ -174,11 +174,11 @@ const UserTableList: React.FC = () => {
    *
    * @param selectedRow
    */
-  const handleRemove = async (selectedRow: API.SysUserManageVO) => {
+  const handleRemove = async (selectedRow: API.UserManageVO) => {
     const hide = message.loading('正在删除');
     if (!selectedRow || !selectedRow.id) return;
     try {
-      await deleteSysUser({ id: selectedRow.id });
+      await deleteUser({ id: selectedRow.id });
       hide();
       message.success('删除成功').then();
       actionRef.current?.reload();
@@ -191,7 +191,7 @@ const UserTableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.SysUserManageVO, API.PageResultSysUserManageVO>
+      <ProTable<API.UserManageVO, API.PageResultUserManageVO>
         headerTitle={'用户管理'}
         actionRef={actionRef}
         rowKey="id"
@@ -204,12 +204,12 @@ const UserTableList: React.FC = () => {
         request={async (params, sort, filter) => {
           const sortField = Object.keys(sort)?.[0];
           const sortOrder = sort?.[sortField] ?? undefined;
-          const { data, code } = await getSysUserManageVoPage({
+          const { data, code } = await getUserManageVoPage({
             ...params,
             sortField,
             sortOrder,
             ...filter,
-          } as API.getSysUserManageVOPageParams);
+          } as API.getUserManageVOPageParams);
           return {
             success: code === 0,
             data: data?.records || [],
@@ -229,7 +229,7 @@ const UserTableList: React.FC = () => {
         closable={false}
       >
         {currentRow?.userPhone && (
-          <ProDescriptions<API.SysUserManageVO>
+          <ProDescriptions<API.UserManageVO>
             column={2}
             title={currentRow?.userName}
             request={async () => ({
@@ -238,7 +238,7 @@ const UserTableList: React.FC = () => {
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsColumn<API.SysUserManageVO>[]}
+            columns={columns as ProDescriptionsColumn<API.UserManageVO>[]}
           />
         )}
       </Drawer>

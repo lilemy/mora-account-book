@@ -15,7 +15,7 @@ import com.lilemy.moraaccountbook.model.dto.book.AccountBookUserQueryRequest;
 import com.lilemy.moraaccountbook.model.entity.AccountBook;
 import com.lilemy.moraaccountbook.model.entity.AccountBookCategory;
 import com.lilemy.moraaccountbook.model.entity.AccountBookMember;
-import com.lilemy.moraaccountbook.model.entity.SysUser;
+import com.lilemy.moraaccountbook.model.entity.User;
 import com.lilemy.moraaccountbook.model.enums.AccountBookMemberRoleEnum;
 import com.lilemy.moraaccountbook.model.enums.AccountBookMemberStatusEnum;
 import com.lilemy.moraaccountbook.model.enums.AccountBookStatusEnum;
@@ -24,10 +24,7 @@ import com.lilemy.moraaccountbook.model.vo.book.AccountBookCategoryVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookManageMemberVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookManageVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookUserVO;
-import com.lilemy.moraaccountbook.service.AccountBookCategoryService;
-import com.lilemy.moraaccountbook.service.AccountBookMemberService;
-import com.lilemy.moraaccountbook.service.AccountBookService;
-import com.lilemy.moraaccountbook.service.SysUserService;
+import com.lilemy.moraaccountbook.service.*;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
@@ -55,7 +52,7 @@ import static com.mybatisflex.core.query.QueryMethods.column;
 @RequiredArgsConstructor
 public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, AccountBook> implements AccountBookService {
 
-    private final SysUserService sysUserService;
+    private final UserService userService;
     private final AccountBookMemberService accountBookMemberService;
     private final AccountBookCategoryService accountBookCategoryService;
 
@@ -110,14 +107,14 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
     @Override
     public PageResult<AccountBookUserVO> getUserAccountBookPage(AccountBookUserQueryRequest request, PageQuery pageQuery) {
         // 1.获取当前登录用户
-        SysUser loginUser = sysUserService.getLoginUser();
+        User loginUser = userService.getLoginUser();
         // 2.构建用户账本联表查询
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select(
                         column(AccountBook::getId),
                         column(AccountBook::getOwnerId),
-                        column(SysUser::getUserPhone).as(AccountBookUserVO::getOwnerPhone),
-                        column(SysUser::getUserName).as(AccountBookUserVO::getOwnerName),
+                        column(User::getUserPhone).as(AccountBookUserVO::getOwnerPhone),
+                        column(User::getUserName).as(AccountBookUserVO::getOwnerName),
                         column(AccountBook::getBookName),
                         column(AccountBook::getBookType),
                         column(AccountBook::getIcon),
@@ -132,8 +129,8 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
                 .from(AccountBook.class)
                 .innerJoin(AccountBookMember.class)
                 .on(AccountBookMember::getBookId, AccountBook::getId)
-                .leftJoin(SysUser.class)
-                .on(SysUser::getId, AccountBook::getOwnerId)
+                .leftJoin(User.class)
+                .on(User::getId, AccountBook::getOwnerId)
                 .where(AccountBookMember::getUserId).eq(loginUser.getId())
                 .and(AccountBookMember::getStatus).eq(AccountBookMemberStatusEnum.NORMAL);
 
@@ -170,18 +167,18 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
         }
         // 3.获取用户信息
         Set<Long> userIds = accountBookList.stream().map(AccountBook::getOwnerId).collect(Collectors.toSet());
-        List<SysUser> userList = sysUserService.listByIds(userIds);
-        Map<Long, SysUser> userMap = userList.stream()
-                .collect(Collectors.toMap(SysUser::getId, Function.identity(), (v1, v2) -> v1));
+        List<User> userList = userService.listByIds(userIds);
+        Map<Long, User> userMap = userList.stream()
+                .collect(Collectors.toMap(User::getId, Function.identity(), (v1, v2) -> v1));
         // 4.转换为封装类
         Page<AccountBookManageVO> accountBookManageVOPage = accountBookPage.map(accountBook -> {
             AccountBookManageVO accountBookManageVO = new AccountBookManageVO();
             BeanUtil.copyProperties(accountBook, accountBookManageVO);
             // 设置用户信息
             if (userMap.containsKey(accountBook.getOwnerId())) {
-                SysUser sysUser = userMap.get(accountBook.getOwnerId());
-                accountBookManageVO.setOwnerPhone(sysUser.getUserPhone());
-                accountBookManageVO.setOwnerName(sysUser.getUserName());
+                User user = userMap.get(accountBook.getOwnerId());
+                accountBookManageVO.setOwnerPhone(user.getUserPhone());
+                accountBookManageVO.setOwnerName(user.getUserName());
             }
             return accountBookManageVO;
         });
@@ -225,14 +222,14 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
         Set<Long> userIds = bookMemberList.stream().map(AccountBookMember::getUserId).collect(Collectors.toSet());
         userIds.add(accountBook.getOwnerId());
         // 4.获取用户信息
-        List<SysUser> userList = sysUserService.listByIds(userIds);
-        Map<Long, SysUser> userMap = userList.stream()
-                .collect(Collectors.toMap(SysUser::getId, Function.identity(), (v1, v2) -> v1));
+        List<User> userList = userService.listByIds(userIds);
+        Map<Long, User> userMap = userList.stream()
+                .collect(Collectors.toMap(User::getId, Function.identity(), (v1, v2) -> v1));
         // 5.封装创建用户信息
         if (userMap.containsKey(accountBook.getOwnerId())) {
-            SysUser sysUser = userMap.get(accountBook.getOwnerId());
-            accountBookManageVO.setOwnerPhone(sysUser.getUserPhone());
-            accountBookManageVO.setOwnerName(sysUser.getUserName());
+            User user = userMap.get(accountBook.getOwnerId());
+            accountBookManageVO.setOwnerPhone(user.getUserPhone());
+            accountBookManageVO.setOwnerName(user.getUserName());
         }
         // 6.封装账本成员列表
         List<AccountBookManageMemberVO> memberVOList = bookMemberList.stream()
@@ -240,9 +237,9 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
                     AccountBookManageMemberVO memberVO = new AccountBookManageMemberVO();
                     BeanUtil.copyProperties(member, memberVO);
                     if (userMap.containsKey(member.getUserId())) {
-                        SysUser sysUser = userMap.get(member.getUserId());
-                        memberVO.setUserPhone(sysUser.getUserPhone());
-                        memberVO.setUserName(sysUser.getUserName());
+                        User user = userMap.get(member.getUserId());
+                        memberVO.setUserPhone(user.getUserPhone());
+                        memberVO.setUserName(user.getUserName());
                     }
                     return memberVO;
                 })

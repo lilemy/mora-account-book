@@ -1,7 +1,7 @@
 package com.lilemy.moraaccountbook.model.vo.user;
 
-import com.lilemy.moraaccountbook.model.enums.SysUserGenderEnum;
-import com.lilemy.moraaccountbook.model.enums.SysUserRoleEnum;
+import com.lilemy.moraaccountbook.model.enums.UserGenderEnum;
+import com.lilemy.moraaccountbook.model.enums.UserRoleEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,25 +13,25 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 用户管理封装
+ * 登录用户信息
  *
  * @author lilemy
- * @date 2026-08-21
+ * @date 2026-08-20
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "用户管理封装")
-public class SysUserManageVO implements Serializable {
+@Schema(description = "登录用户信息")
+public class LoginUserVO implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = -6718303982414858849L;
+    private static final long serialVersionUID = -4213094836691102522L;
 
     /**
      * id
      */
-    @Schema(description = "id")
+    @Schema(defaultValue = "id")
     private Long id;
 
     /**
@@ -67,26 +67,14 @@ public class SysUserManageVO implements Serializable {
     /**
      * 用户性别(0未填写 1男 2女)
      */
-    @Schema(description = "用户性别(0未填写 1男 2女)")
-    private SysUserGenderEnum userGender;
+    @Schema(description = "用户性别")
+    private UserGenderEnum userGender;
 
     /**
      * 用户角色(0用户 1管理员)
      */
-    @Schema(description = "用户角色(0用户 1管理员)")
-    private SysUserRoleEnum userRole;
-
-    /**
-     * 备注
-     */
-    @Schema(description = "备注")
-    private String remark;
-
-    /**
-     * 编辑时间
-     */
-    @Schema(description = "编辑时间")
-    private LocalDateTime editTime;
+    @Schema(description = "用户角色")
+    private UserRoleEnum userRole;
 
     /**
      * 创建时间

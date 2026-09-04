@@ -1,7 +1,7 @@
 import type { SelectProps } from 'antd';
 import { Avatar, Select, Spin } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getSysUserManageVoPage } from '@/services/mora-account-book/sysUserController';
+import { getUserManageVoPage } from '@/services/mora-account-book/userController';
 
 export type UserSelectOption = {
   label: string;
@@ -33,7 +33,7 @@ const fetchUserOptions = async (
 ): Promise<UserSelectOption[]> => {
   const keyword = search.trim();
   const isPhone = /^\d+$/.test(keyword);
-  const { code, data } = await getSysUserManageVoPage({
+  const { code, data } = await getUserManageVoPage({
     pageNum: '1',
     pageSize: '20',
     userName: keyword && !isPhone ? keyword : undefined,

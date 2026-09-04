@@ -6,7 +6,7 @@ import { App, Button, Tabs } from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useState } from 'react';
 import { Footer } from '@/components';
-import { userLogin } from '@/services/mora-account-book/sysUserController';
+import { userLogin } from '@/services/mora-account-book/userController';
 import Settings from '../../../../config/defaultSettings';
 
 const useStyles = createStyles(({ token }) => {

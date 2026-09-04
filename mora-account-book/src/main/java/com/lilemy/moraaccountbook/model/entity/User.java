@@ -2,8 +2,8 @@ package com.lilemy.moraaccountbook.model.entity;
 
 import cn.dev33.satoken.json.SaJsonType;
 import com.lilemy.moraaccountbook.model.enums.LogicallyDeleteEnum;
-import com.lilemy.moraaccountbook.model.enums.SysUserGenderEnum;
-import com.lilemy.moraaccountbook.model.enums.SysUserRoleEnum;
+import com.lilemy.moraaccountbook.model.enums.UserGenderEnum;
+import com.lilemy.moraaccountbook.model.enums.UserRoleEnum;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
@@ -26,8 +26,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@Table("sys_user")
-public class SysUser extends BaseEntity implements Serializable, SaJsonType {
+@Table("user")
+public class User extends BaseEntity implements Serializable, SaJsonType {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -71,12 +71,12 @@ public class SysUser extends BaseEntity implements Serializable, SaJsonType {
     /**
      * 用户性别(0未填写 1男 2女)
      */
-    private SysUserGenderEnum userGender;
+    private UserGenderEnum userGender;
 
     /**
      * 用户角色(0用户 1管理员)
      */
-    private SysUserRoleEnum userRole;
+    private UserRoleEnum userRole;
 
     /**
      * 备注

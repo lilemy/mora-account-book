@@ -1,6 +1,6 @@
 package com.lilemy.moraaccountbook.mapper;
 
-import com.lilemy.moraaccountbook.model.entity.SysUser;
+import com.lilemy.moraaccountbook.model.entity.User;
 import com.mybatisflex.core.BaseMapper;
 
 /**
@@ -9,6 +9,6 @@ import com.mybatisflex.core.BaseMapper;
  * @author lilemy
  * @since 2026-08-20
  */
-public interface SysUserMapper extends BaseMapper<SysUser> {
+public interface UserMapper extends BaseMapper<User> {
 
 }

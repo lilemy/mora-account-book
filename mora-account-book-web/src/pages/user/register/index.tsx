@@ -5,7 +5,7 @@ import { App, Button } from 'antd';
 import { createStyles } from 'antd-style';
 import React from 'react';
 import { Footer } from '@/components';
-import { userRegister } from '@/services/mora-account-book/sysUserController';
+import { userRegister } from '@/services/mora-account-book/userController';
 import Settings from '../../../../config/defaultSettings';
 
 const useStyles = createStyles(() => ({

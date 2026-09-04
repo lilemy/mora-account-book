@@ -1,7 +1,7 @@
 package com.lilemy.moraaccountbook.model.dto.user;
 
-import com.lilemy.moraaccountbook.model.enums.SysUserGenderEnum;
-import com.lilemy.moraaccountbook.model.enums.SysUserRoleEnum;
+import com.lilemy.moraaccountbook.model.enums.UserGenderEnum;
+import com.lilemy.moraaccountbook.model.enums.UserRoleEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -43,11 +43,11 @@ public class UserQueryRequest implements Serializable {
      * 用户性别(0未填写 1男 2女)
      */
     @Schema(description = "用户性别")
-    private SysUserGenderEnum userGender;
+    private UserGenderEnum userGender;
 
     /**
      * 用户角色(0用户 1管理员)
      */
     @Schema(description = "用户角色")
-    private SysUserRoleEnum userRole;
+    private UserRoleEnum userRole;
 }

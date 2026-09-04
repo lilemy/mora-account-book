@@ -5,19 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * 用户角色枚举
+ *
  * @author lilemy
  * @date 2026-08-20
  */
 @Getter
 @AllArgsConstructor
-public enum SysUserGenderEnum {
+public enum UserRoleEnum {
 
-    UNKNOWN(0, "未填写"),
-    MALE(1, "男"),
-    FEMALE(2, "女");
+    USER(0, "用户"),
+    ADMIN(1, "管理员");
 
     @EnumValue
     private final int code;
 
-    private final String desc;
+    private final String message;
 }

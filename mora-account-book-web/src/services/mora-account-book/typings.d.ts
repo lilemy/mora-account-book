@@ -143,6 +143,14 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseLoginUserVO = {
+    /** 状态码 */
+    code?: number;
+    data?: LoginUserVO;
+    /** 提示信息 */
+    message?: string;
+  };
+
   type BaseResponseLong = {
     /** 状态码 */
     code?: number;
@@ -176,10 +184,10 @@ declare namespace API {
     message?: string;
   };
 
-  type BaseResponsePageResultSysUserManageVO = {
+  type BaseResponsePageResultUserManageVO = {
     /** 状态码 */
     code?: number;
-    data?: PageResultSysUserManageVO;
+    data?: PageResultUserManageVO;
     /** 提示信息 */
     message?: string;
   };
@@ -193,18 +201,10 @@ declare namespace API {
     message?: string;
   };
 
-  type BaseResponseSysLoginUserVO = {
+  type BaseResponseUserManageVO = {
     /** 状态码 */
     code?: number;
-    data?: SysLoginUserVO;
-    /** 提示信息 */
-    message?: string;
-  };
-
-  type BaseResponseSysUserManageVO = {
-    /** 状态码 */
-    code?: number;
-    data?: SysUserManageVO;
+    data?: UserManageVO;
     /** 提示信息 */
     message?: string;
   };
@@ -299,7 +299,7 @@ declare namespace API {
     id: number;
   };
 
-  type deleteSysUserParams = {
+  type deleteUserParams = {
     id: number;
   };
 
@@ -366,11 +366,11 @@ declare namespace API {
     id: number;
   };
 
-  type getSysUserByIdParams = {
+  type getUserByIdParams = {
     id: number;
   };
 
-  type getSysUserManageVOPageParams = {
+  type getUserManageVOPageParams = {
     /** 用户昵称 */
     userName?: string;
     /** 用户手机号 */
@@ -389,6 +389,28 @@ declare namespace API {
     sortField?: string;
     /** 排序顺序 */
     sortOrder?: string;
+  };
+
+  type LoginUserVO = {
+    id?: number;
+    /** 用户昵称 */
+    userName?: string;
+    /** 用户头像 */
+    userAvatar?: string;
+    /** 用户简介 */
+    userProfile?: string;
+    /** 用户手机号 */
+    userPhone?: string;
+    /** 用户邮箱 */
+    userEmail?: string;
+    /** 用户性别 */
+    userGender?: "UNKNOWN" | "MALE" | "FEMALE";
+    /** 用户角色 */
+    userRole?: "USER" | "ADMIN";
+    /** 创建时间 */
+    createTime?: string;
+    /** 更新时间 */
+    updateTime?: string;
   };
 
   type PageResultAccountBookManageVO = {
@@ -430,9 +452,9 @@ declare namespace API {
     totalRow?: number;
   };
 
-  type PageResultSysUserManageVO = {
+  type PageResultUserManageVO = {
     /** 当前页数据 */
-    records?: SysUserManageVO[];
+    records?: UserManageVO[];
     /** 当前页码 */
     pageNum?: number;
     /** 每页数据数量 */
@@ -441,55 +463,6 @@ declare namespace API {
     totalPage?: number;
     /** 总数据数量 */
     totalRow?: number;
-  };
-
-  type SysLoginUserVO = {
-    id?: number;
-    /** 用户昵称 */
-    userName?: string;
-    /** 用户头像 */
-    userAvatar?: string;
-    /** 用户简介 */
-    userProfile?: string;
-    /** 用户手机号 */
-    userPhone?: string;
-    /** 用户邮箱 */
-    userEmail?: string;
-    /** 用户性别 */
-    userGender?: "UNKNOWN" | "MALE" | "FEMALE";
-    /** 用户角色 */
-    userRole?: "USER" | "ADMIN";
-    /** 创建时间 */
-    createTime?: string;
-    /** 更新时间 */
-    updateTime?: string;
-  };
-
-  type SysUserManageVO = {
-    /** id */
-    id?: number;
-    /** 用户昵称 */
-    userName?: string;
-    /** 用户头像 */
-    userAvatar?: string;
-    /** 用户简介 */
-    userProfile?: string;
-    /** 用户手机号 */
-    userPhone?: string;
-    /** 用户邮箱 */
-    userEmail?: string;
-    /** 用户性别(0未填写 1男 2女) */
-    userGender?: "UNKNOWN" | "MALE" | "FEMALE";
-    /** 用户角色(0用户 1管理员) */
-    userRole?: "USER" | "ADMIN";
-    /** 备注 */
-    remark?: string;
-    /** 编辑时间 */
-    editTime?: string;
-    /** 创建时间 */
-    createTime?: string;
-    /** 更新时间 */
-    updateTime?: string;
   };
 
   type updateCategoryTemplateItemParams = {
@@ -533,6 +506,33 @@ declare namespace API {
     userPhone: string;
     /** 用户密码 */
     userPassword: string;
+  };
+
+  type UserManageVO = {
+    /** id */
+    id?: number;
+    /** 用户昵称 */
+    userName?: string;
+    /** 用户头像 */
+    userAvatar?: string;
+    /** 用户简介 */
+    userProfile?: string;
+    /** 用户手机号 */
+    userPhone?: string;
+    /** 用户邮箱 */
+    userEmail?: string;
+    /** 用户性别(0未填写 1男 2女) */
+    userGender?: "UNKNOWN" | "MALE" | "FEMALE";
+    /** 用户角色(0用户 1管理员) */
+    userRole?: "USER" | "ADMIN";
+    /** 备注 */
+    remark?: string;
+    /** 编辑时间 */
+    editTime?: string;
+    /** 创建时间 */
+    createTime?: string;
+    /** 更新时间 */
+    updateTime?: string;
   };
 
   type UserRegisterRequest = {
