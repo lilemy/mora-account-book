@@ -240,7 +240,6 @@ create table if not exists user_account
     account_name         varchar(64)                              not null,
     account_type         smallint                                 not null,
     sub_account_name     varchar(128),
-    initial_balance      numeric(18, 2) default 0.00              not null,
     current_balance      numeric(18, 2) default 0.00              not null,
     credit_limit         numeric(18, 2),
     credit_statement_day smallint,
@@ -275,7 +274,6 @@ comment on column user_account.user_id is '所属用户 ID';
 comment on column user_account.account_name is '账户名称';
 comment on column user_account.account_type is '账户类型：0资金账户，1信用账户，2充值账户，3理财账户，4借贷账户';
 comment on column user_account.sub_account_name is '子账户名称，银行名称或借贷人姓名';
-comment on column user_account.initial_balance is '初始余额或欠款';
 comment on column user_account.current_balance is '当前余额或欠款余额';
 comment on column user_account.credit_limit is '信用额度，仅信用账户使用';
 comment on column user_account.credit_statement_day is '信用账户出账日';

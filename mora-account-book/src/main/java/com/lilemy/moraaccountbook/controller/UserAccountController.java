@@ -1,10 +1,16 @@
 package com.lilemy.moraaccountbook.controller;
 
+import com.lilemy.moraaccountbook.common.BaseResponse;
+import com.lilemy.moraaccountbook.common.ResultUtils;
+import com.lilemy.moraaccountbook.model.dto.user.UserAccountCreateRequest;
+import com.lilemy.moraaccountbook.model.dto.user.UserAccountDeleteRequest;
+import com.lilemy.moraaccountbook.model.dto.user.UserAccountUpdateRequest;
 import com.lilemy.moraaccountbook.service.UserAccountService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 用户账户 控制层。
@@ -19,4 +25,22 @@ public class UserAccountController {
 
     @Resource
     private UserAccountService userAccountService;
+
+    @Operation(summary = "创建用户账本")
+    @PostMapping("/create")
+    public BaseResponse<Long> createUserAccount(@Validated @RequestBody UserAccountCreateRequest request) {
+        return ResultUtils.success(userAccountService.createUserAccount(request));
+    }
+
+    @Operation(summary = "更新用户账本")
+    @PutMapping("/update")
+    public BaseResponse<Boolean> updateUserAccount(@Validated @RequestBody UserAccountUpdateRequest request) {
+        return ResultUtils.success(userAccountService.updateUserAccount(request));
+    }
+
+    @Operation(summary = "删除用户账本")
+    @DeleteMapping("/delete")
+    public BaseResponse<Boolean> deleteUserAccount(@Validated @RequestBody UserAccountDeleteRequest request) {
+        return ResultUtils.success(userAccountService.deleteUserAccount(request));
+    }
 }

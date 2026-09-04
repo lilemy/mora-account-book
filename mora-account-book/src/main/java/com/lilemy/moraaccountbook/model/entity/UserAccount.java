@@ -57,11 +57,6 @@ public class UserAccount extends BaseEntity implements Serializable {
     private String subAccountName;
 
     /**
-     * 初始余额或欠款
-     */
-    private BigDecimal initialBalance;
-
-    /**
      * 当前余额或欠款余额
      */
     private BigDecimal currentBalance;
