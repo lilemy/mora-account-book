@@ -41,11 +41,11 @@ public class UserAccountUpdateRequest implements Serializable {
     private String accountName;
 
     /**
-     * 子账户名称，银行名称或借贷人姓名
+     * 银行名称
      */
-    @Schema(description = "子账户名称，银行名称或借贷人姓名")
-    @Size(max = 50, message = "子账户名称过长")
-    private String subAccountName;
+    @Schema(description = "银行名称")
+    @Size(max = 50, message = "银行名称过长")
+    private String bankName;
 
     /**
      * 信用额度，仅信用账户使用
@@ -69,6 +69,13 @@ public class UserAccountUpdateRequest implements Serializable {
     @Min(value = 1, message = "信用账户还款日不能为零")
     @Max(value = 28, message = "信用账户还款日不能超过28日")
     private Integer creditRepaymentDay;
+
+    /**
+     * 借贷人姓名
+     */
+    @Schema(description = "借贷人姓名")
+    @Size(max = 50, message = "借贷人姓名过长")
+    private String loanUser;
 
     /**
      * 借贷方向：0借出，1借入，仅借贷账户使用

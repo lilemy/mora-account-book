@@ -13,6 +13,9 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collection;
+import java.util.Map;
+
 /**
  * 用户 服务层。
  *
@@ -116,6 +119,14 @@ public interface UserService extends IService<User> {
      * @return 用户管理封装信息
      */
     UserManageVO getUserManageVO(User user);
+
+    /**
+     * 根据ID集合获取用户Map
+     *
+     * @param ids ID集合
+     * @return 用户Map
+     */
+    Map<Long, User> getUserMapByIds(Collection<Long> ids);
 
     /**
      * 获取加密后的密码

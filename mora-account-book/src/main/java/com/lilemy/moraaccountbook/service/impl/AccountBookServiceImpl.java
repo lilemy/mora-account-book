@@ -24,7 +24,10 @@ import com.lilemy.moraaccountbook.model.vo.book.AccountBookCategoryVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookManageMemberVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookManageVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookUserVO;
-import com.lilemy.moraaccountbook.service.*;
+import com.lilemy.moraaccountbook.service.AccountBookCategoryService;
+import com.lilemy.moraaccountbook.service.AccountBookMemberService;
+import com.lilemy.moraaccountbook.service.AccountBookService;
+import com.lilemy.moraaccountbook.service.UserService;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
@@ -167,15 +170,13 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
         }
         // 3.获取用户信息
         Set<Long> userIds = accountBookList.stream().map(AccountBook::getOwnerId).collect(Collectors.toSet());
-        List<User> userList = userService.listByIds(userIds);
-        Map<Long, User> userMap = userList.stream()
-                .collect(Collectors.toMap(User::getId, Function.identity(), (v1, v2) -> v1));
+        Map<Long, User> userMap = userService.getUserMapByIds(userIds);
         // 4.转换为封装类
         Page<AccountBookManageVO> accountBookManageVOPage = accountBookPage.map(accountBook -> {
             AccountBookManageVO accountBookManageVO = new AccountBookManageVO();
             BeanUtil.copyProperties(accountBook, accountBookManageVO);
             // 设置用户信息
-            if (userMap.containsKey(accountBook.getOwnerId())) {
+            if (CollUtil.isNotEmpty(userMap) && userMap.containsKey(accountBook.getOwnerId())) {
                 User user = userMap.get(accountBook.getOwnerId());
                 accountBookManageVO.setOwnerPhone(user.getUserPhone());
                 accountBookManageVO.setOwnerName(user.getUserName());

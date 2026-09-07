@@ -52,9 +52,9 @@ public class UserAccount extends BaseEntity implements Serializable {
     private UserAccountTypeEnum accountType;
 
     /**
-     * 子账户名称，银行名称或借贷人姓名
+     * 银行名称
      */
-    private String subAccountName;
+    private String bankName;
 
     /**
      * 当前余额或欠款余额
@@ -75,6 +75,11 @@ public class UserAccount extends BaseEntity implements Serializable {
      * 信用账户还款日
      */
     private Integer creditRepaymentDay;
+
+    /**
+     * 借贷人姓名
+     */
+    private String loanUser;
 
     /**
      * 借贷方向：0借出，1借入，仅借贷账户使用

@@ -1,26 +1,37 @@
 package com.lilemy.moraaccountbook.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import com.lilemy.moraaccountbook.common.PageQuery;
+import com.lilemy.moraaccountbook.common.PageResult;
 import com.lilemy.moraaccountbook.exception.ErrorCode;
 import com.lilemy.moraaccountbook.exception.ThrowUtils;
 import com.lilemy.moraaccountbook.mapper.UserAccountMapper;
 import com.lilemy.moraaccountbook.model.dto.user.UserAccountCreateRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserAccountDeleteRequest;
+import com.lilemy.moraaccountbook.model.dto.user.UserAccountQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserAccountUpdateRequest;
 import com.lilemy.moraaccountbook.model.entity.User;
 import com.lilemy.moraaccountbook.model.entity.UserAccount;
 import com.lilemy.moraaccountbook.model.enums.UserAccountTypeEnum;
 import com.lilemy.moraaccountbook.model.enums.UserRoleEnum;
+import com.lilemy.moraaccountbook.model.vo.user.UserAccountManageVO;
+import com.lilemy.moraaccountbook.model.vo.user.UserAccountVO;
 import com.lilemy.moraaccountbook.service.UserAccountService;
 import com.lilemy.moraaccountbook.service.UserService;
+import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -125,6 +136,89 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         return true;
     }
 
+    @Override
+    public UserAccountVO getUserAccountVOById(Long id) {
+        UserAccount userAccount = this.getById(id);
+        ThrowUtils.throwIf(userAccount == null, ErrorCode.NOT_FOUND_ERROR, "账户不存在");
+        return BeanUtil.copyProperties(userAccount, UserAccountVO.class);
+    }
+
+    @Override
+    public UserAccountManageVO getUserAccountManageVOById(Long id) {
+        UserAccount userAccount = this.getById(id);
+        ThrowUtils.throwIf(userAccount == null, ErrorCode.NOT_FOUND_ERROR, "账户不存在");
+        UserAccountManageVO userAccountManageVO = BeanUtil.copyProperties(userAccount, UserAccountManageVO.class);
+        User user = userService.getById(userAccount.getUserId());
+        if (user != null) {
+            userAccountManageVO.setUserPhone(user.getUserPhone());
+            userAccountManageVO.setUserName(user.getUserName());
+        }
+        return userAccountManageVO;
+    }
+
+    @Override
+    public PageResult<UserAccountVO> getUserAccountVOPage(UserAccountQueryRequest request, PageQuery pageQuery) {
+        // 1.构建查询条件
+        QueryWrapper queryWrapper = this.buildQueryWrapper(request, pageQuery);
+        // 2.分页查询
+        Page<UserAccount> userAccountPage = this.page(pageQuery.build(), queryWrapper);
+        // 3.转换为封装类
+        Page<UserAccountVO> userAccountVOPage = userAccountPage.map(userAccount ->
+                BeanUtil.copyProperties(userAccount, UserAccountVO.class));
+        // 4.返回结果
+        return PageResult.build(userAccountVOPage);
+    }
+
+    @Override
+    public PageResult<UserAccountManageVO> getUserAccountManageVOPage(UserAccountQueryRequest request, PageQuery pageQuery) {
+        // 1.构建查询条件
+        QueryWrapper queryWrapper = this.buildQueryWrapper(request, pageQuery);
+        // 2.分页查询
+        Page<UserAccount> userAccountPage = this.page(pageQuery.build(), queryWrapper);
+        List<UserAccount> records = userAccountPage.getRecords();
+        if (CollUtil.isEmpty(records)) {
+            return PageResult.build();
+        }
+        // 3.获取用户信息
+        Set<Long> userIds = records.stream().map(UserAccount::getUserId).collect(Collectors.toSet());
+        Map<Long, User> userMap = userService.getUserMapByIds(userIds);
+        // 4.转换为封装类
+        Page<UserAccountManageVO> userAccountManageVOPage = userAccountPage.map(userAccount -> {
+            UserAccountManageVO userAccountManageVO = new UserAccountManageVO();
+            BeanUtil.copyProperties(userAccount, userAccountManageVO);
+            // 设置用户信息
+            Long userId = userAccount.getUserId();
+            if (CollUtil.isNotEmpty(userMap) && userMap.containsKey(userId)) {
+                User user = userMap.get(userId);
+                userAccountManageVO.setUserPhone(user.getUserPhone());
+                userAccountManageVO.setUserName(user.getUserName());
+            }
+            return userAccountManageVO;
+        });
+        // 5.返回结果
+        return PageResult.build(userAccountManageVOPage);
+    }
+
+    @Override
+    public QueryWrapper buildQueryWrapper(UserAccountQueryRequest request, PageQuery pageQuery) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        if (pageQuery != null) {
+            queryWrapper = pageQuery.buildOrderQuery();
+        }
+        if (request == null) {
+            return queryWrapper;
+        }
+        Long userId = request.getUserId();
+        String accountName = request.getAccountName();
+        UserAccountTypeEnum accountType = request.getAccountType();
+        Boolean isDefault = request.getIsDefault();
+        queryWrapper.like(UserAccount::getAccountName, accountName, StringUtils::isNotBlank)
+                .eq(UserAccount::getAccountType, accountType, Objects::nonNull)
+                .eq(UserAccount::getUserId, userId, Objects::nonNull)
+                .eq(UserAccount::getIsDefault, isDefault, Objects::nonNull);
+        return queryWrapper;
+    }
+
     /**
      * 判断当前用户是否有操作该账户的权限。
      *
@@ -152,7 +246,7 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         return UserAccount.builder()
                 .accountName(request.getAccountName())
                 .accountType(request.getAccountType())
-                .subAccountName(request.getSubAccountName())
+                .bankName(request.getBankName())
                 .currentBalance(request.getCurrentBalance())
                 .accountNoTail(request.getAccountNoTail())
                 .icon(request.getIcon())
@@ -174,7 +268,7 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         return UserAccount.builder()
                 .accountName(request.getAccountName())
                 .accountType(request.getAccountType())
-                .subAccountName(request.getSubAccountName())
+                .bankName(request.getBankName())
                 .currentBalance(currentBalance)
                 .creditLimit(creditLimit)
                 .creditStatementDay(request.getCreditStatementDay())
@@ -199,8 +293,8 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         return UserAccount.builder()
                 .accountName(request.getAccountName())
                 .accountType(request.getAccountType())
-                .subAccountName(request.getSubAccountName())
                 .currentBalance(request.getCurrentBalance())
+                .loanUser(request.getLoanUser())
                 .loanDirection(request.getLoanDirection())
                 .loanDate(loanDate)
                 .repaymentDate(repaymentDate)
@@ -222,7 +316,7 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         return UserAccount.builder()
                 .id(request.getId())
                 .accountName(request.getAccountName())
-                .subAccountName(request.getSubAccountName())
+                .bankName(request.getBankName())
                 .accountNoTail(request.getAccountNoTail())
                 .icon(request.getIcon())
                 .isDefault(request.getIsDefault())
@@ -239,6 +333,9 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
      */
     private UserAccount updateCreditUserAccount(UserAccount account, UserAccountUpdateRequest request) {
         BigDecimal creditLimit = request.getCreditLimit();
+        if (creditLimit == null) {
+            creditLimit = account.getCreditLimit();
+        }
         // 1.参数校验
         BigDecimal currentBalance = account.getCurrentBalance();
         ThrowUtils.throwIf(creditLimit.compareTo(currentBalance) < 0, ErrorCode.PARAMS_ERROR, "信用额度不能小于欠款余额");
@@ -246,7 +343,7 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         return UserAccount.builder()
                 .id(request.getId())
                 .accountName(request.getAccountName())
-                .subAccountName(request.getSubAccountName())
+                .bankName(request.getBankName())
                 .creditLimit(creditLimit)
                 .creditStatementDay(request.getCreditStatementDay())
                 .creditRepaymentDay(request.getCreditRepaymentDay())
@@ -279,7 +376,7 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         return UserAccount.builder()
                 .id(request.getId())
                 .accountName(request.getAccountName())
-                .subAccountName(request.getSubAccountName())
+                .loanUser(request.getLoanUser())
                 .loanDate(loanDate)
                 .repaymentDate(repaymentDate)
                 .icon(request.getIcon())

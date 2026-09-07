@@ -46,15 +46,20 @@ export default [
       {
         path: '/admin/category-template',
         name: '分类模板管理',
-        icon: 'container',
+        icon: 'book',
         component: './admin/category',
       },
       {
         path: '/admin/category-template/update/:id',
         name: '更新分类模板',
-        icon: 'wallet',
         component: './admin/category/update',
         hideInMenu: true,
+      },
+      {
+        path: '/admin/account',
+        name: '账户管理',
+        icon: 'accountBook',
+        component: './admin/account',
       },
     ],
   },

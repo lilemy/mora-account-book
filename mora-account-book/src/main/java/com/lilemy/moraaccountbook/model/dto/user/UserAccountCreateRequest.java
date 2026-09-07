@@ -40,11 +40,11 @@ public class UserAccountCreateRequest implements Serializable {
     private UserAccountTypeEnum accountType;
 
     /**
-     * 子账户名称，银行名称或借贷人姓名
+     * 银行名称
      */
-    @Schema(description = "子账户名称")
-    @Size(max = 50, message = "子账户名称不能超过50个字符")
-    private String subAccountName;
+    @Schema(description = "银行名称")
+    @Size(max = 50, message = "银行名称不能超过50个字符")
+    private String bankName;
 
     /**
      * 当前余额或欠款余额
@@ -76,6 +76,13 @@ public class UserAccountCreateRequest implements Serializable {
     @Min(value = 0, message = "信用账户还款日不能小于0")
     @Max(value = 28, message = "信用账户还款日不能大于28")
     private Integer creditRepaymentDay;
+
+    /**
+     * 借贷人姓名
+     */
+    @Schema(description = "借贷人姓名")
+    @Size(max = 50, message = "借贷人姓名不能超过50个字符")
+    private String loanUser;
 
     /**
      * 借贷方向：0借出，1借入，仅借贷账户使用

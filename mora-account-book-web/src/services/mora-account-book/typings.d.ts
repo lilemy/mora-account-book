@@ -184,6 +184,22 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponsePageResultUserAccountManageVO = {
+    /** 状态码 */
+    code?: number;
+    data?: PageResultUserAccountManageVO;
+    /** 提示信息 */
+    message?: string;
+  };
+
+  type BaseResponsePageResultUserAccountVO = {
+    /** 状态码 */
+    code?: number;
+    data?: PageResultUserAccountVO;
+    /** 提示信息 */
+    message?: string;
+  };
+
   type BaseResponsePageResultUserManageVO = {
     /** 状态码 */
     code?: number;
@@ -197,6 +213,22 @@ declare namespace API {
     code?: number;
     /** 数据 */
     data?: string;
+    /** 提示信息 */
+    message?: string;
+  };
+
+  type BaseResponseUserAccountManageVO = {
+    /** 状态码 */
+    code?: number;
+    data?: UserAccountManageVO;
+    /** 提示信息 */
+    message?: string;
+  };
+
+  type BaseResponseUserAccountVO = {
+    /** 状态码 */
+    code?: number;
+    data?: UserAccountVO;
     /** 提示信息 */
     message?: string;
   };
@@ -366,6 +398,52 @@ declare namespace API {
     id: number;
   };
 
+  type getUserAccountManageVOByIdParams = {
+    id: number;
+  };
+
+  type getUserAccountManageVOPageParams = {
+    /** 所属用户 ID */
+    userId?: string;
+    /** 账户名称 */
+    accountName?: string;
+    /** 账户类型 */
+    accountType?: string;
+    /** 是否为用户默认账户 */
+    isDefault?: string;
+    /** 分页大小 */
+    pageSize?: string;
+    /** 当前页数 */
+    pageNum?: string;
+    /** 排序字段 */
+    sortField?: string;
+    /** 排序顺序 */
+    sortOrder?: string;
+  };
+
+  type getUserAccountVOByIdParams = {
+    id: number;
+  };
+
+  type getUserAccountVOPageParams = {
+    /** 所属用户 ID */
+    userId?: string;
+    /** 账户名称 */
+    accountName?: string;
+    /** 账户类型 */
+    accountType?: string;
+    /** 是否为用户默认账户 */
+    isDefault?: string;
+    /** 分页大小 */
+    pageSize?: string;
+    /** 当前页数 */
+    pageNum?: string;
+    /** 排序字段 */
+    sortField?: string;
+    /** 排序顺序 */
+    sortOrder?: string;
+  };
+
   type getUserByIdParams = {
     id: number;
   };
@@ -452,6 +530,32 @@ declare namespace API {
     totalRow?: number;
   };
 
+  type PageResultUserAccountManageVO = {
+    /** 当前页数据 */
+    records?: UserAccountManageVO[];
+    /** 当前页码 */
+    pageNum?: number;
+    /** 每页数据数量 */
+    pageSize?: number;
+    /** 总页数 */
+    totalPage?: number;
+    /** 总数据数量 */
+    totalRow?: number;
+  };
+
+  type PageResultUserAccountVO = {
+    /** 当前页数据 */
+    records?: UserAccountVO[];
+    /** 当前页码 */
+    pageNum?: number;
+    /** 每页数据数量 */
+    pageSize?: number;
+    /** 总页数 */
+    totalPage?: number;
+    /** 总数据数量 */
+    totalRow?: number;
+  };
+
   type PageResultUserManageVO = {
     /** 当前页数据 */
     records?: UserManageVO[];
@@ -499,6 +603,159 @@ declare namespace API {
     id: number;
     /** 头像文件 */
     file: Blob;
+  };
+
+  type UserAccountCreateRequest = {
+    /** 账户名称 */
+    accountName: string;
+    /** 账户类型 */
+    accountType: "CAPITAL" | "CREDIT" | "RECHARGE" | "INVEST" | "LOAN";
+    /** 银行名称 */
+    bankName?: string;
+    /** 当前余额或欠款余额 */
+    currentBalance: number;
+    /** 信用额度 */
+    creditLimit?: number;
+    /** 信用账户出账日 */
+    creditStatementDay?: number;
+    /** 信用账户还款日 */
+    creditRepaymentDay?: number;
+    /** 借贷人姓名 */
+    loanUser?: string;
+    /** 借贷方向 */
+    loanDirection?: "LEND" | "BORROW";
+    /** 借贷发生日期 */
+    loanDate?: string;
+    /** 计划还款日期 */
+    repaymentDate?: string;
+    /** 银行卡或信用卡卡号后四位 */
+    accountNoTail?: string;
+    /** 账户图标标识 */
+    icon?: string;
+    /** 是否为用户默认账户 */
+    isDefault?: boolean;
+    /** 备注 */
+    remark?: string;
+  };
+
+  type UserAccountDeleteRequest = {
+    /** 账户 ID */
+    id: number;
+    /** 是否保留账单 */
+    isKeepBill: boolean;
+  };
+
+  type UserAccountManageVO = {
+    /** 账户 ID */
+    id?: number;
+    /** 所属用户 ID */
+    userId?: number;
+    /** 所属用户手机号 */
+    userPhone?: string;
+    /** 所属用户昵称 */
+    userName?: string;
+    /** 账户名称 */
+    accountName?: string;
+    /** 账户类型 */
+    accountType?: "CAPITAL" | "CREDIT" | "RECHARGE" | "INVEST" | "LOAN";
+    /** 银行名称 */
+    bankName?: string;
+    /** 信用账户出账日 */
+    creditStatementDay?: number;
+    /** 信用账户还款日 */
+    creditRepaymentDay?: number;
+    /** 借贷人姓名 */
+    loanUser?: string;
+    /** 借贷方向 */
+    loanDirection?: "LEND" | "BORROW";
+    /** 借贷发生日期 */
+    loanDate?: string;
+    /** 计划还款日期 */
+    repaymentDate?: string;
+    /** 银行卡或信用卡卡号后四位 */
+    accountNoTail?: string;
+    /** 账户图标标识 */
+    icon?: string;
+    /** 是否为用户默认账户 */
+    isDefault?: boolean;
+    /** 备注 */
+    remark?: string;
+    /** 创建时间 */
+    createTime?: string;
+    /** 更新时间 */
+    updateTime?: string;
+  };
+
+  type UserAccountUpdateRequest = {
+    /** 账户 ID */
+    id: number;
+    /** 账户名称 */
+    accountName?: string;
+    /** 银行名称 */
+    bankName?: string;
+    /** 信用额度，仅信用账户使用 */
+    creditLimit?: number;
+    /** 信用账户出账日 */
+    creditStatementDay?: number;
+    /** 信用账户还款日 */
+    creditRepaymentDay?: number;
+    /** 借贷人姓名 */
+    loanUser?: string;
+    /** 借贷方向，仅借贷账户使用 */
+    loanDirection?: "LEND" | "BORROW";
+    /** 借贷发生日期，仅借贷账户使用 */
+    loanDate?: string;
+    /** 计划还款日期，仅借贷账户使用 */
+    repaymentDate?: string;
+    /** 银行卡或信用卡卡号后四位 */
+    accountNoTail?: string;
+    /** 账户图标标识 */
+    icon?: string;
+    /** 是否为用户默认账户 */
+    isDefault?: boolean;
+    /** 备注 */
+    remark?: string;
+  };
+
+  type UserAccountVO = {
+    /** 账户 ID */
+    id?: number;
+    /** 所属用户 ID */
+    userId?: number;
+    /** 账户名称 */
+    accountName?: string;
+    /** 账户类型 */
+    accountType?: "CAPITAL" | "CREDIT" | "RECHARGE" | "INVEST" | "LOAN";
+    /** 银行名称 */
+    bankName?: string;
+    /** 当前余额或欠款余额 */
+    currentBalance?: number;
+    /** 信用额度 */
+    creditLimit?: number;
+    /** 信用账户出账日 */
+    creditStatementDay?: number;
+    /** 信用账户还款日 */
+    creditRepaymentDay?: number;
+    /** 借贷人姓名 */
+    loanUser?: string;
+    /** 借贷方向 */
+    loanDirection?: "LEND" | "BORROW";
+    /** 借贷发生日期 */
+    loanDate?: string;
+    /** 计划还款日期 */
+    repaymentDate?: string;
+    /** 银行卡或信用卡卡号后四位 */
+    accountNoTail?: string;
+    /** 账户图标标识 */
+    icon?: string;
+    /** 是否为用户默认账户 */
+    isDefault?: boolean;
+    /** 备注 */
+    remark?: string;
+    /** 创建时间 */
+    createTime?: string;
+    /** 更新时间 */
+    updateTime?: string;
   };
 
   type UserLoginRequest = {

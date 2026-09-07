@@ -2,6 +2,7 @@ package com.lilemy.moraaccountbook.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.PhoneUtil;
 import com.lilemy.moraaccountbook.common.PageQuery;
 import com.lilemy.moraaccountbook.common.PageResult;
@@ -31,7 +32,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 用户 服务层实现。
@@ -236,6 +239,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         UserManageVO userManageVO = new UserManageVO();
         BeanUtil.copyProperties(user, userManageVO);
         return userManageVO;
+    }
+
+    @Override
+    public Map<Long, User> getUserMapByIds(Collection<Long> ids) {
+        if (CollUtil.isEmpty(ids)) {
+            return Collections.emptyMap();
+        }
+        List<User> userList = this.listByIds(ids);
+        if (CollUtil.isEmpty(userList)) {
+            return Collections.emptyMap();
+        }
+        return userList.stream().collect(Collectors.toMap(User::getId, Function.identity(), (v1, v2) -> v1));
     }
 
     @Override
