@@ -2,8 +2,8 @@ package com.lilemy.moraaccountbook.model.entity;
 
 import cn.dev33.satoken.json.SaJsonType;
 import com.lilemy.moraaccountbook.model.enums.LogicallyDeleteEnum;
-import com.lilemy.moraaccountbook.model.enums.UserGenderEnum;
-import com.lilemy.moraaccountbook.model.enums.UserRoleEnum;
+import com.lilemy.moraaccountbook.model.enums.user.UserGenderEnum;
+import com.lilemy.moraaccountbook.model.enums.user.UserRoleEnum;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;

@@ -8,7 +8,7 @@ import com.lilemy.moraaccountbook.mapper.AccountBookCategoryMapper;
 import com.lilemy.moraaccountbook.model.entity.AccountBookCategory;
 import com.lilemy.moraaccountbook.model.entity.CategoryTemplate;
 import com.lilemy.moraaccountbook.model.entity.CategoryTemplateItem;
-import com.lilemy.moraaccountbook.model.enums.AccountBookCategoryLevelEnum;
+import com.lilemy.moraaccountbook.model.enums.CategoryLevelEnum;
 import com.lilemy.moraaccountbook.model.enums.EnableStatusEnum;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookCategoryVO;
 import com.lilemy.moraaccountbook.service.AccountBookCategoryService;
@@ -63,7 +63,7 @@ public class AccountBookCategoryServiceImpl extends ServiceImpl<AccountBookCateg
         List<AccountBookCategory> accountBookCategoryList = new ArrayList<>();
         // 4.获取一级分类
         SnowFlakeIDKeyGenerator generator = new SnowFlakeIDKeyGenerator();
-        itemList.stream().filter(item -> item.getCategoryLevel().equals(AccountBookCategoryLevelEnum.LEVEL_1))
+        itemList.stream().filter(item -> item.getCategoryLevel().equals(CategoryLevelEnum.LEVEL_1))
                 .forEach(item -> {
                     long id = generator.nextId();
                     AccountBookCategory parentCategory = AccountBookCategory.builder()
@@ -120,7 +120,7 @@ public class AccountBookCategoryServiceImpl extends ServiceImpl<AccountBookCateg
         }
         // 获取第一层分类模版项
         return categoryList.stream().filter(item ->
-                        item.getCategoryLevel().equals(AccountBookCategoryLevelEnum.LEVEL_1) && item.getParentId().equals(0L))
+                        item.getCategoryLevel().equals(CategoryLevelEnum.LEVEL_1) && item.getParentId().equals(0L))
                 .map(item -> {
                     // 构建分类模版项 VO
                     AccountBookCategoryVO itemVO = new AccountBookCategoryVO();

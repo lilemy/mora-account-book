@@ -1,7 +1,7 @@
 package com.lilemy.moraaccountbook.model.entity;
 
-import com.lilemy.moraaccountbook.model.enums.AccountBookCategoryLevelEnum;
-import com.lilemy.moraaccountbook.model.enums.AccountBookCategoryTypeEnum;
+import com.lilemy.moraaccountbook.model.enums.CategoryLevelEnum;
+import com.lilemy.moraaccountbook.model.enums.TransactionTypeEnum;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
@@ -52,12 +52,12 @@ public class AccountBookCategory extends BaseEntity implements Serializable {
     /**
      * 分类类型(1支出 2收入)
      */
-    private AccountBookCategoryTypeEnum categoryType;
+    private TransactionTypeEnum categoryType;
 
     /**
      * 分类层级(1一级 2二级)
      */
-    private AccountBookCategoryLevelEnum categoryLevel;
+    private CategoryLevelEnum categoryLevel;
 
     /**
      * 分类图标标识

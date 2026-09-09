@@ -1,7 +1,7 @@
 package com.lilemy.moraaccountbook.model.entity;
 
-import com.lilemy.moraaccountbook.model.enums.UserAccountLoanDirectionEnum;
-import com.lilemy.moraaccountbook.model.enums.UserAccountTypeEnum;
+import com.lilemy.moraaccountbook.model.enums.user.UserAccountLoanDirectionEnum;
+import com.lilemy.moraaccountbook.model.enums.user.UserAccountTypeEnum;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;

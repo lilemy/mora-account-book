@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum AccountBookCategoryLevelEnum {
+public enum CategoryLevelEnum {
 
     LEVEL_1(1, "一级分类"),
     LEVEL_2(2, "二级分类");
@@ -28,7 +28,7 @@ public enum AccountBookCategoryLevelEnum {
      * @param parentId 父id
      * @return 分类分层
      */
-    public static AccountBookCategoryLevelEnum getLevelByParent(Long parentId) {
+    public static CategoryLevelEnum getLevelByParent(Long parentId) {
         if (parentId == null || parentId == 0) {
             return LEVEL_1;
         }

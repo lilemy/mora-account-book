@@ -1,25 +1,25 @@
-package com.lilemy.moraaccountbook.model.enums;
+package com.lilemy.moraaccountbook.model.enums.book;
 
 import com.mybatisflex.annotation.EnumValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 用户性别枚举
+ * 账本类型枚举
  *
  * @author lilemy
- * @date 2026-08-20
+ * @date 2026-08-26
  */
 @Getter
 @AllArgsConstructor
-public enum UserGenderEnum {
+public enum AccountBookTypeEnum {
 
-    UNKNOWN(0, "未填写"),
-    MALE(1, "男"),
-    FEMALE(2, "女");
+    PERSONAL(0, "个人账本"),
+    SHARE(1, "共享账本");
 
     @EnumValue
     private final int code;
 
     private final String desc;
 }
+

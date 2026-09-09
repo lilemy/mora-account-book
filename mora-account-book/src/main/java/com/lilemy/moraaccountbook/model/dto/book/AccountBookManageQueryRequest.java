@@ -1,7 +1,7 @@
 package com.lilemy.moraaccountbook.model.dto.book;
 
-import com.lilemy.moraaccountbook.model.enums.AccountBookStatusEnum;
-import com.lilemy.moraaccountbook.model.enums.AccountBookTypeEnum;
+import com.lilemy.moraaccountbook.model.enums.book.AccountBookStatusEnum;
+import com.lilemy.moraaccountbook.model.enums.book.AccountBookTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

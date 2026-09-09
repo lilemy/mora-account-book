@@ -1,4 +1,4 @@
-package com.lilemy.moraaccountbook.model.enums;
+package com.lilemy.moraaccountbook.model.enums.user;
 
 import com.mybatisflex.annotation.EnumValue;
 import lombok.AllArgsConstructor;

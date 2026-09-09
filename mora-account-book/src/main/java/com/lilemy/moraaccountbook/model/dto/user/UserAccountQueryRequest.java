@@ -1,6 +1,6 @@
 package com.lilemy.moraaccountbook.model.dto.user;
 
-import com.lilemy.moraaccountbook.model.enums.UserAccountTypeEnum;
+import com.lilemy.moraaccountbook.model.enums.user.UserAccountTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

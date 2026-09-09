@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum AccountBookCategoryTypeEnum {
+public enum TransactionTypeEnum {
 
     INCOME(1, "收入"),
     EXPENSE(2, "支出");

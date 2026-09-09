@@ -1,7 +1,7 @@
 package com.lilemy.moraaccountbook.model.vo.book;
 
-import com.lilemy.moraaccountbook.model.enums.AccountBookMemberRoleEnum;
-import com.lilemy.moraaccountbook.model.enums.AccountBookMemberStatusEnum;
+import com.lilemy.moraaccountbook.model.enums.book.AccountBookMemberRoleEnum;
+import com.lilemy.moraaccountbook.model.enums.book.AccountBookMemberStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

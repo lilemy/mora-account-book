@@ -1,6 +1,6 @@
 package com.lilemy.moraaccountbook.model.dto.user;
 
-import com.lilemy.moraaccountbook.model.enums.UserAccountLoanDirectionEnum;
+import com.lilemy.moraaccountbook.model.enums.user.UserAccountLoanDirectionEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

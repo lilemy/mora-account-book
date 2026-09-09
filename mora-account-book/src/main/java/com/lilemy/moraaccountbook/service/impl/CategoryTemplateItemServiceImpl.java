@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.lilemy.moraaccountbook.mapper.CategoryTemplateItemMapper;
 import com.lilemy.moraaccountbook.model.entity.CategoryTemplateItem;
-import com.lilemy.moraaccountbook.model.enums.AccountBookCategoryLevelEnum;
+import com.lilemy.moraaccountbook.model.enums.CategoryLevelEnum;
 import com.lilemy.moraaccountbook.model.vo.category.CategoryTemplateItemVO;
 import com.lilemy.moraaccountbook.service.CategoryTemplateItemService;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
@@ -29,7 +29,7 @@ public class CategoryTemplateItemServiceImpl extends ServiceImpl<CategoryTemplat
         }
         // 获取第一层分类模版项
         return categoryTemplateItemList.stream().filter(item ->
-                        item.getCategoryLevel().equals(AccountBookCategoryLevelEnum.LEVEL_1) && item.getParentId().equals(0L))
+                        item.getCategoryLevel().equals(CategoryLevelEnum.LEVEL_1) && item.getParentId().equals(0L))
                 .map(item -> {
                     // 构建分类模版项 VO
                     CategoryTemplateItemVO itemVO = new CategoryTemplateItemVO();

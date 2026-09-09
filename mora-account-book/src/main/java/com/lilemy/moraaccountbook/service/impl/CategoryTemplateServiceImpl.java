@@ -10,8 +10,8 @@ import com.lilemy.moraaccountbook.mapper.CategoryTemplateMapper;
 import com.lilemy.moraaccountbook.model.dto.category.*;
 import com.lilemy.moraaccountbook.model.entity.CategoryTemplate;
 import com.lilemy.moraaccountbook.model.entity.CategoryTemplateItem;
-import com.lilemy.moraaccountbook.model.enums.AccountBookCategoryLevelEnum;
-import com.lilemy.moraaccountbook.model.enums.AccountBookCategoryTypeEnum;
+import com.lilemy.moraaccountbook.model.enums.CategoryLevelEnum;
+import com.lilemy.moraaccountbook.model.enums.TransactionTypeEnum;
 import com.lilemy.moraaccountbook.model.enums.EnableStatusEnum;
 import com.lilemy.moraaccountbook.model.vo.category.CategoryTemplateVO;
 import com.lilemy.moraaccountbook.service.CategoryTemplateItemService;
@@ -148,7 +148,7 @@ public class CategoryTemplateServiceImpl extends ServiceImpl<CategoryTemplateMap
         CategoryTemplate template = this.getById(templateId);
         ThrowUtils.throwIf(template == null, ErrorCode.PARAMS_ERROR, "分类模板不存在");
         // 获取创建项层级
-        AccountBookCategoryLevelEnum categoryLevel = AccountBookCategoryLevelEnum.getLevelByParent(parentId);
+        CategoryLevelEnum categoryLevel = CategoryLevelEnum.getLevelByParent(parentId);
         // 判断分类项父类是否存在以及是否重名
         validCategoryTemplateItem(null, null, templateId, parentId, categoryName, request.getCategoryType(), categoryLevel);
         // 2.创建分类项
@@ -186,7 +186,7 @@ public class CategoryTemplateServiceImpl extends ServiceImpl<CategoryTemplateMap
             templateId = oldItem.getTemplateId();
         }
         // 获取创建项层级
-        AccountBookCategoryLevelEnum categoryLevel = AccountBookCategoryLevelEnum.getLevelByParent(parentId);
+        CategoryLevelEnum categoryLevel = CategoryLevelEnum.getLevelByParent(parentId);
         // 判断分类项父类是否存在以及是否重名
         validCategoryTemplateItem(id, oldItem, templateId, parentId, categoryName, request.getCategoryType(), categoryLevel);
         // 2.更新分类项
@@ -212,7 +212,7 @@ public class CategoryTemplateServiceImpl extends ServiceImpl<CategoryTemplateMap
         CategoryTemplateItem item = categoryTemplateItemService.getById(id);
         ThrowUtils.throwIf(item == null, ErrorCode.PARAMS_ERROR, "分类项不存在");
         // 2.判断分类项下是否有子项
-        if (item.getCategoryLevel().equals(AccountBookCategoryLevelEnum.LEVEL_1)) {
+        if (item.getCategoryLevel().equals(CategoryLevelEnum.LEVEL_1)) {
             List<CategoryTemplateItem> children = categoryTemplateItemService.queryChain()
                     .eq(CategoryTemplateItem::getParentId, id)
                     .list();
@@ -239,7 +239,7 @@ public class CategoryTemplateServiceImpl extends ServiceImpl<CategoryTemplateMap
         boolean update = categoryTemplateItemService.updateById(updateItem);
         ThrowUtils.throwIf(!update, ErrorCode.OPERATION_ERROR, "分类项状态切换失败");
         // 3.更新子项状态
-        if (item.getCategoryLevel().equals(AccountBookCategoryLevelEnum.LEVEL_1)) {
+        if (item.getCategoryLevel().equals(CategoryLevelEnum.LEVEL_1)) {
             List<CategoryTemplateItem> children = categoryTemplateItemService.queryChain()
                     .eq(CategoryTemplateItem::getParentId, id)
                     .list();
@@ -356,7 +356,7 @@ public class CategoryTemplateServiceImpl extends ServiceImpl<CategoryTemplateMap
      * @param categoryLevel 分类项等级
      */
     private void validCategoryTemplateItem(Long id, CategoryTemplateItem oldItem, Long templateId, Long parentId, String categoryName,
-                                           AccountBookCategoryTypeEnum categoryType, AccountBookCategoryLevelEnum categoryLevel) {
+                                           TransactionTypeEnum categoryType, CategoryLevelEnum categoryLevel) {
         if (oldItem != null) {
             if (templateId == null) {
                 templateId = oldItem.getTemplateId();
@@ -372,13 +372,13 @@ public class CategoryTemplateServiceImpl extends ServiceImpl<CategoryTemplateMap
             }
         }
         // 判断分类项父类是否存在
-        if (categoryLevel.equals(AccountBookCategoryLevelEnum.LEVEL_2)) {
+        if (categoryLevel.equals(CategoryLevelEnum.LEVEL_2)) {
             CategoryTemplateItem parentItem = categoryTemplateItemService.getById(parentId);
             ThrowUtils.throwIf(parentItem == null, ErrorCode.PARAMS_ERROR, "分类项父类不存在");
             // 判断分类项父类是否属于当前分类模板
             ThrowUtils.throwIf(!templateId.equals(parentItem.getTemplateId()), ErrorCode.PARAMS_ERROR, "分类项父类不属于当前分类模板");
             // 判断父类是否为一级
-            ThrowUtils.throwIf(!parentItem.getCategoryLevel().equals(AccountBookCategoryLevelEnum.LEVEL_1), ErrorCode.PARAMS_ERROR, "分类项父类不属于一级分类");
+            ThrowUtils.throwIf(!parentItem.getCategoryLevel().equals(CategoryLevelEnum.LEVEL_1), ErrorCode.PARAMS_ERROR, "分类项父类不属于一级分类");
             // 判断和父类类型是否一致
             ThrowUtils.throwIf(!parentItem.getCategoryType().equals(categoryType), ErrorCode.PARAMS_ERROR, "与父类类型不一致");
         }

@@ -1,7 +1,7 @@
 package com.lilemy.moraaccountbook.model.vo.user;
 
-import com.lilemy.moraaccountbook.model.enums.UserAccountLoanDirectionEnum;
-import com.lilemy.moraaccountbook.model.enums.UserAccountTypeEnum;
+import com.lilemy.moraaccountbook.model.enums.user.UserAccountLoanDirectionEnum;
+import com.lilemy.moraaccountbook.model.enums.user.UserAccountTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

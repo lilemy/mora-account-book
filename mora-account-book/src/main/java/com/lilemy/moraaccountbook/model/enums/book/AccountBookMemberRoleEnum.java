@@ -1,21 +1,22 @@
-package com.lilemy.moraaccountbook.model.enums;
+package com.lilemy.moraaccountbook.model.enums.book;
 
 import com.mybatisflex.annotation.EnumValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 账本成员状态枚举
+ * 账本成员角色枚举
  *
  * @author lilemy
  * @date 2026-08-26
  */
 @Getter
 @AllArgsConstructor
-public enum AccountBookMemberStatusEnum {
+public enum AccountBookMemberRoleEnum {
 
-    NORMAL(0, "正常"),
-    REMOVED(1, "已移除");
+    OWNER(0, "所有者"),
+    ADMIN(1, "管理员"),
+    MEMBER(2, "普通成员");
 
     @EnumValue
     private final int code;

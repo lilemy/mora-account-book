@@ -1,21 +1,21 @@
-package com.lilemy.moraaccountbook.model.enums;
+package com.lilemy.moraaccountbook.model.enums.user;
 
 import com.mybatisflex.annotation.EnumValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 用户角色枚举
+ * 用户账户借贷方向枚举
  *
  * @author lilemy
- * @date 2026-08-20
+ * @date 2026-09-04
  */
 @Getter
 @AllArgsConstructor
-public enum UserRoleEnum {
+public enum UserAccountLoanDirectionEnum {
 
-    USER(0, "用户"),
-    ADMIN(1, "管理员");
+    LEND(0, "借出"),
+    BORROW(1, "借入");
 
     @EnumValue
     private final int code;

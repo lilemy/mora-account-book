@@ -289,3 +289,59 @@ comment on column user_account.is_default is '是否为用户默认账户';
 comment on column user_account.remark is '备注';
 comment on column user_account.create_time is '创建时间';
 comment on column user_account.update_time is '更新时间';
+
+-- 收入/支出流水表
+create table if not exists account_book_bill
+(
+    id            bigint primary key,
+    book_id       bigint                              not null,
+    user_id       bigint                              not null,
+    -- 账户删除后，保留流水时允许解除关联
+    account_id    bigint,
+    account_name  varchar(64)                         not null,
+    -- 分类删除或调整后，保留历史分类名称
+    category_id   bigint,
+    category_name varchar(64)                         not null,
+    -- 1：收入，2：支出
+    bill_type     smallint                            not null,
+    -- 始终保存正数，最小精度为分
+    amount        numeric(18, 2)                      not null,
+    bill_time     timestamp                           not null,
+    remark        varchar(512),
+    create_time   timestamp default CURRENT_TIMESTAMP not null,
+    update_time   timestamp default CURRENT_TIMESTAMP not null,
+    constraint ck_account_book_bill_type
+        check (bill_type in (1, 2)),
+    constraint ck_account_book_bill_amount
+        check (amount > 0)
+);
+
+create index if not exists idx_account_book_bill_book_time
+    on account_book_bill (book_id, bill_time desc, id desc);
+
+create index if not exists idx_account_book_bill_account
+    on account_book_bill (account_id);
+
+create index if not exists idx_account_book_bill_category
+    on account_book_bill (category_id);
+
+create index if not exists idx_account_book_bill_creator
+    on account_book_bill (user_id);
+
+create index if not exists idx_account_book_bill_type
+    on account_book_bill (bill_type);
+
+comment on table account_book_bill is '账本收入/支出流水';
+comment on column account_book_bill.id is '流水 ID';
+comment on column account_book_bill.book_id is '所属账本 ID';
+comment on column account_book_bill.user_id is '记账人用户 ID';
+comment on column account_book_bill.account_id is '关联账户 ID';
+comment on column account_book_bill.account_name is '账户名称';
+comment on column account_book_bill.category_id is '关联账本分类 ID';
+comment on column account_book_bill.category_name is '分类名称';
+comment on column account_book_bill.bill_type is '流水类型：1收入，2支出';
+comment on column account_book_bill.amount is '流水金额';
+comment on column account_book_bill.bill_time is '流水发生时间';
+comment on column account_book_bill.remark is '流水备注';
+comment on column account_book_bill.create_time is '创建时间';
+comment on column account_book_bill.update_time is '更新时间';

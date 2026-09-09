@@ -1,7 +1,7 @@
 package com.lilemy.moraaccountbook.model.dto.user;
 
-import com.lilemy.moraaccountbook.model.enums.UserGenderEnum;
-import com.lilemy.moraaccountbook.model.enums.UserRoleEnum;
+import com.lilemy.moraaccountbook.model.enums.user.UserGenderEnum;
+import com.lilemy.moraaccountbook.model.enums.user.UserRoleEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

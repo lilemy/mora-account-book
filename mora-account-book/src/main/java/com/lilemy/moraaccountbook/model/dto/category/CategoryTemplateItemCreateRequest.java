@@ -1,6 +1,6 @@
 package com.lilemy.moraaccountbook.model.dto.category;
 
-import com.lilemy.moraaccountbook.model.enums.AccountBookCategoryTypeEnum;
+import com.lilemy.moraaccountbook.model.enums.TransactionTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -47,7 +47,7 @@ public class CategoryTemplateItemCreateRequest implements Serializable {
      */
     @NotNull(message = "分类类型不能为空")
     @Schema(description = "分类类型")
-    private AccountBookCategoryTypeEnum categoryType;
+    private TransactionTypeEnum categoryType;
 
     /**
      * 分类图标标识

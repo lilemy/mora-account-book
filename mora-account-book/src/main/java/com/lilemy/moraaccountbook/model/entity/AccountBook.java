@@ -1,7 +1,7 @@
 package com.lilemy.moraaccountbook.model.entity;
 
-import com.lilemy.moraaccountbook.model.enums.AccountBookStatusEnum;
-import com.lilemy.moraaccountbook.model.enums.AccountBookTypeEnum;
+import com.lilemy.moraaccountbook.model.enums.book.AccountBookStatusEnum;
+import com.lilemy.moraaccountbook.model.enums.book.AccountBookTypeEnum;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
