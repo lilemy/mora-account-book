@@ -88,10 +88,6 @@ const itemColumns: ProColumns<API.CategoryTemplateItemVO>[] = [
         text: '支出',
         status: 'Error',
       },
-      TRANSFER: {
-        text: '转账',
-        status: 'Processing',
-      },
     },
   },
   {

@@ -52,7 +52,7 @@ public class CategoryTemplateItemVO implements Serializable {
     private String categoryName;
 
     /**
-     * 分类类型(0支出 1收入 2转账)
+     * 分类类型(1支出 2收入)
      */
     @Schema(description = "分类类型")
     private AccountBookCategoryTypeEnum categoryType;

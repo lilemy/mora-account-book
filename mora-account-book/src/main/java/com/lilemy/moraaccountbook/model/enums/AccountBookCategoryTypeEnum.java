@@ -15,8 +15,7 @@ import lombok.Getter;
 public enum AccountBookCategoryTypeEnum {
 
     INCOME(1, "收入"),
-    EXPENSE(2, "支出"),
-    TRANSFER(3, "转账");
+    EXPENSE(2, "支出");
 
     @EnumValue
     private final int code;

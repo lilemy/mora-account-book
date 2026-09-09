@@ -43,7 +43,7 @@ public class CategoryTemplateItemCreateRequest implements Serializable {
     private String categoryName;
 
     /**
-     * 分类类型(0支出 1收入 2转账)
+     * 分类类型(1支出 2收入)
      */
     @NotNull(message = "分类类型不能为空")
     @Schema(description = "分类类型")

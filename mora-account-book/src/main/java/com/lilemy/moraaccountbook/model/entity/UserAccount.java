@@ -1,6 +1,6 @@
 package com.lilemy.moraaccountbook.model.entity;
 
-import com.lilemy.moraaccountbook.model.enums.UserAccountLoanDirection;
+import com.lilemy.moraaccountbook.model.enums.UserAccountLoanDirectionEnum;
 import com.lilemy.moraaccountbook.model.enums.UserAccountTypeEnum;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
@@ -84,7 +84,7 @@ public class UserAccount extends BaseEntity implements Serializable {
     /**
      * 借贷方向：0借出，1借入，仅借贷账户使用
      */
-    private UserAccountLoanDirection loanDirection;
+    private UserAccountLoanDirectionEnum loanDirection;
 
     /**
      * 借贷发生日期，仅借贷账户使用

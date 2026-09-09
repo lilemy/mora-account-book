@@ -11,7 +11,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { useParams } from '@umijs/max';
-import { App, Button, Flex, Space, Spin, Tag } from 'antd';
+import { App, Button, Flex, Space, Spin, Switch, Tag } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   changeCategoryTemplateItemStatus,
@@ -42,19 +42,35 @@ const { options: iconOptions } = getAccountBookIconConfig();
 const categoryTypeText: Record<string, string> = {
   INCOME: '收入',
   EXPENSE: '支出',
-  TRANSFER: '转账',
 };
 
 const categoryTypeColor: Record<string, string> = {
   INCOME: 'green',
   EXPENSE: 'red',
-  TRANSFER: 'blue',
 };
 
 const flattenCategoryItems = (
   items: API.CategoryTemplateItemVO[],
 ): API.CategoryTemplateItemVO[] =>
   items.flatMap((item) => [item, ...flattenCategoryItems(item.children ?? [])]);
+
+const filterCategoryItemsByType = (
+  items: API.CategoryTemplateItemVO[],
+  categoryType: 'INCOME' | 'EXPENSE',
+): API.CategoryTemplateItemVO[] =>
+  items.reduce<API.CategoryTemplateItemVO[]>((filteredItems, item) => {
+    if (item.categoryType !== categoryType) {
+      return filteredItems;
+    }
+
+    filteredItems.push({
+      ...item,
+      children: item.children
+        ? filterCategoryItemsByType(item.children, categoryType)
+        : undefined,
+    });
+    return filteredItems;
+  }, []);
 
 const CategoryTemplateUpdatePage = () => {
   const { id } = useParams<{ id?: string }>();
@@ -66,6 +82,9 @@ const CategoryTemplateUpdatePage = () => {
   const [itemModalOpen, setItemModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<API.CategoryTemplateItemVO>();
   const [statusUpdatingId, setStatusUpdatingId] = useState<number>();
+  const [selectedCategoryType, setSelectedCategoryType] = useState<
+    'INCOME' | 'EXPENSE'
+  >('EXPENSE');
 
   const loadDetail = useCallback(async () => {
     if (id == null) {
@@ -114,6 +133,12 @@ const CategoryTemplateUpdatePage = () => {
         })),
     ],
     [detail?.itemList, editingItem?.id],
+  );
+
+  const filteredCategoryItems = useMemo(
+    () =>
+      filterCategoryItemsByType(detail?.itemList ?? [], selectedCategoryType),
+    [detail?.itemList, selectedCategoryType],
   );
 
   const openCreateItem = useCallback(() => {
@@ -384,18 +409,29 @@ const CategoryTemplateUpdatePage = () => {
             </ProForm>
 
             <ProTable<API.CategoryTemplateItemVO>
+              key={selectedCategoryType}
               rowKey={(record) => String(record.id)}
-              headerTitle={`模板分类项（${flattenCategoryItems(detail.itemList ?? []).length}）`}
+              headerTitle={`模板分类项（${flattenCategoryItems(filteredCategoryItems).length}）`}
               toolBarRender={() => [
-                <Button key="create" type="primary" onClick={openCreateItem}>
-                  新增分类项
-                </Button>,
+                <Space key="category-filter">
+                  <Switch
+                    checked={selectedCategoryType === 'INCOME'}
+                    onChange={(checked) =>
+                      setSelectedCategoryType(checked ? 'INCOME' : 'EXPENSE')
+                    }
+                    checkedChildren="收入"
+                    unCheckedChildren="支出"
+                  />
+                  <Button key="create" type="primary" onClick={openCreateItem}>
+                    新增分类项
+                  </Button>
+                </Space>,
               ]}
               search={false}
               options={false}
               pagination={false}
               expandable={{ defaultExpandAllRows: true }}
-              dataSource={detail.itemList ?? []}
+              dataSource={filteredCategoryItems}
               columns={columns}
             />
 

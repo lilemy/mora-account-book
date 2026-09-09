@@ -9,7 +9,7 @@ declare namespace API {
     /** 分类名称 */
     categoryName?: string;
     /** 分类类型 */
-    categoryType?: "INCOME" | "EXPENSE" | "TRANSFER";
+    categoryType?: "INCOME" | "EXPENSE";
     /** 分类层级 */
     categoryLevel?: "LEVEL_1" | "LEVEL_2";
     /** 分类图标标识 */
@@ -251,7 +251,7 @@ declare namespace API {
     /** 分类名称 */
     categoryName?: string;
     /** 分类类型 */
-    categoryType?: "INCOME" | "EXPENSE" | "TRANSFER";
+    categoryType?: "INCOME" | "EXPENSE";
     /** 分类层级 */
     categoryLevel?: "LEVEL_1" | "LEVEL_2";
     /** 分类图标标识 */

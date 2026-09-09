@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum UserAccountLoanDirection {
+public enum UserAccountLoanDirectionEnum {
 
     LEND(0, "借出"),
     BORROW(1, "借入");

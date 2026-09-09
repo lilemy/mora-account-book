@@ -1,6 +1,6 @@
 package com.lilemy.moraaccountbook.model.vo.user;
 
-import com.lilemy.moraaccountbook.model.enums.UserAccountLoanDirection;
+import com.lilemy.moraaccountbook.model.enums.UserAccountLoanDirectionEnum;
 import com.lilemy.moraaccountbook.model.enums.UserAccountTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -93,7 +93,7 @@ public class UserAccountManageVO implements Serializable {
      * 借贷方向：0借出，1借入，仅借贷账户使用
      */
     @Schema(description = "借贷方向")
-    private UserAccountLoanDirection loanDirection;
+    private UserAccountLoanDirectionEnum loanDirection;
 
     /**
      * 借贷发生日期，仅借贷账户使用
