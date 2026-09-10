@@ -301,4 +301,16 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
         }
         return true;
     }
+
+    @Override
+    public Map<Long, AccountBook> getAccountBookMapByIds(Collection<Long> ids) {
+        if (CollUtil.isEmpty(ids)) {
+            return Collections.emptyMap();
+        }
+        List<AccountBook> accountBookList = this.listByIds(ids);
+        if (CollUtil.isEmpty(accountBookList)) {
+            return Collections.emptyMap();
+        }
+        return accountBookList.stream().collect(Collectors.toMap(AccountBook::getId, Function.identity(), (v1, v2) -> v1));
+    }
 }

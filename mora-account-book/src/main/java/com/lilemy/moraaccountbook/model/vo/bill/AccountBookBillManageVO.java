@@ -53,6 +53,12 @@ public class AccountBookBillManageVO implements Serializable {
     private Long userId;
 
     /**
+     * 记账人用户手机号
+     */
+    @Schema(description = "记账人用户手机号")
+    private String userPhone;
+
+    /**
      * 记账人用户名称
      */
     @Schema(description = "记账人用户名称")

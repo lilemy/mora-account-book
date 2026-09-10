@@ -55,7 +55,7 @@ public class UserAccountController {
         return ResultUtils.success(userAccountService.getUserAccountVOById(id));
     }
 
-    @Operation(summary = "获取用户账户")
+    @Operation(summary = "获取用户账户（仅管理员）")
     @GetMapping("/admin/{id}")
     public BaseResponse<UserAccountManageVO> getUserAccountManageVOById(@PathVariable Long id) {
         return ResultUtils.success(userAccountService.getUserAccountManageVOById(id));

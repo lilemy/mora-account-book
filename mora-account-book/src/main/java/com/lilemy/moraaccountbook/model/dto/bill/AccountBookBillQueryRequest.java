@@ -9,14 +9,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 账本收入/支出流水管理查询请求参数
+ * 账本收入/支出流水查询请求参数
  *
  * @author lilemy
  * @date 2026-09-09
  */
 @Data
-@Schema(description = "账本收入/支出流水管理查询请求参数")
-public class AccountBookBillManageQueryRequest implements Serializable {
+@Schema(description = "账本收入/支出流水查询请求参数")
+public class AccountBookBillQueryRequest implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -4287619274796740063L;
