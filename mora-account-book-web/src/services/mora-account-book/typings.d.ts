@@ -1,4 +1,39 @@
 declare namespace API {
+  type AccountBookBillManageVO = {
+    /** 流水 ID */
+    id?: number;
+    /** 所属账本 ID */
+    bookId?: number;
+    /** 所属账本名称 */
+    bookName?: string;
+    /** 记账人用户 ID */
+    userId?: number;
+    /** 记账人用户手机号 */
+    userPhone?: string;
+    /** 记账人用户名称 */
+    userName?: string;
+    /** 关联账户 ID */
+    accountId?: number;
+    /** 账户名称 */
+    accountName?: string;
+    /** 关联账本分类 ID */
+    categoryId?: number;
+    /** 分类名称 */
+    categoryName?: string;
+    /** 流水类型 */
+    billType?: "INCOME" | "EXPENSE";
+    /** 流水金额 */
+    amount?: number;
+    /** 流水发生时间 */
+    billTime?: string;
+    /** 流水备注 */
+    remark?: string;
+    /** 创建时间 */
+    createTime?: string;
+    /** 更新时间 */
+    updateTime?: string;
+  };
+
   type AccountBookCategoryVO = {
     /** 账本分类 ID */
     id?: number;
@@ -118,6 +153,14 @@ declare namespace API {
     joinTime?: string;
   };
 
+  type BaseResponseAccountBookBillManageVO = {
+    /** 状态码 */
+    code?: number;
+    data?: AccountBookBillManageVO;
+    /** 提示信息 */
+    message?: string;
+  };
+
   type BaseResponseAccountBookManageVO = {
     /** 状态码 */
     code?: number;
@@ -156,6 +199,14 @@ declare namespace API {
     code?: number;
     /** 数据 */
     data?: number;
+    /** 提示信息 */
+    message?: string;
+  };
+
+  type BaseResponsePageResultAccountBookBillManageVO = {
+    /** 状态码 */
+    code?: number;
+    data?: PageResultAccountBookBillManageVO;
     /** 提示信息 */
     message?: string;
   };
@@ -398,8 +449,35 @@ declare namespace API {
     id: number;
   };
 
+  type getUserAccountManageVOById1Params = {
+    id: number;
+  };
+
   type getUserAccountManageVOByIdParams = {
     id: number;
+  };
+
+  type getUserAccountManageVOPage1Params = {
+    /** 所属账本 ID */
+    bookId?: string;
+    /** 记账人用户 ID */
+    userId?: string;
+    /** 分类名称 */
+    categoryName?: string;
+    /** 流水类型 */
+    billType?: string;
+    /** 流水开始时间 */
+    startBillTime?: string;
+    /** 流水结束时间 */
+    endBillTime?: string;
+    /** 分页大小 */
+    pageSize?: string;
+    /** 当前页数 */
+    pageNum?: string;
+    /** 排序字段 */
+    sortField?: string;
+    /** 排序顺序 */
+    sortOrder?: string;
   };
 
   type getUserAccountManageVOPageParams = {
@@ -489,6 +567,19 @@ declare namespace API {
     createTime?: string;
     /** 更新时间 */
     updateTime?: string;
+  };
+
+  type PageResultAccountBookBillManageVO = {
+    /** 当前页数据 */
+    records?: AccountBookBillManageVO[];
+    /** 当前页码 */
+    pageNum?: number;
+    /** 每页数据数量 */
+    pageSize?: number;
+    /** 总页数 */
+    totalPage?: number;
+    /** 总数据数量 */
+    totalRow?: number;
   };
 
   type PageResultAccountBookManageVO = {

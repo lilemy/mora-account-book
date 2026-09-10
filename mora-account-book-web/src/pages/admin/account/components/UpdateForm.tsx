@@ -202,11 +202,14 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ onOk, trigger, values }) => {
           <Spin style={{ display: 'block', padding: '32px 0' }} />
         ) : (
           <>
-            <ProFormText
-              name="accountName"
-              label="账户名称"
-              rules={[{ required: true, message: '请输入账户名称' }]}
-            />
+            <ProForm.Group>
+              <ProFormText
+                name="accountName"
+                label="账户名称"
+                rules={[{ required: true, message: '请输入账户名称' }]}
+              />
+              <ProFormSwitch name="isDefault" label="默认账户" />
+            </ProForm.Group>
             {detail.accountType !== 'LOAN' && (
               <ProForm.Group>
                 <ProFormText name="bankName" label="银行名称" />
@@ -239,20 +242,22 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ onOk, trigger, values }) => {
             )}
             {detail.accountType === 'LOAN' && (
               <>
-                <ProFormText
-                  name="loanUser"
-                  label="借贷人姓名"
-                  rules={[{ required: true, message: '请输入借贷人姓名' }]}
-                />
-                <ProFormSelect
-                  name="loanDirection"
-                  label="借贷方向"
-                  options={[
-                    { label: '借出', value: 'LEND' },
-                    { label: '借入', value: 'BORROW' },
-                  ]}
-                  rules={[{ required: true, message: '请选择借贷方向' }]}
-                />
+                <ProForm.Group>
+                  <ProFormText
+                    name="loanUser"
+                    label="借贷人姓名"
+                    rules={[{ required: true, message: '请输入借贷人姓名' }]}
+                  />
+                  <ProFormSelect
+                    name="loanDirection"
+                    label="借贷方向"
+                    options={[
+                      { label: '借出', value: 'LEND' },
+                      { label: '借入', value: 'BORROW' },
+                    ]}
+                    rules={[{ required: true, message: '请选择借贷方向' }]}
+                  />
+                </ProForm.Group>
                 <ProForm.Group>
                   <ProFormDatePicker
                     name="loanDate"
@@ -284,7 +289,6 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ onOk, trigger, values }) => {
                 ),
               }}
             />
-            <ProFormSwitch name="isDefault" label="默认账户" />
             <ProFormTextArea name="remark" label="备注" />
           </>
         )}

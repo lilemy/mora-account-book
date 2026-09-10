@@ -7,10 +7,12 @@ import * as userController from "./userController";
 import * as categoryTemplateController from "./categoryTemplateController";
 import * as accountBookController from "./accountBookController";
 import * as healthController from "./healthController";
+import * as accountBookBillController from "./accountBookBillController";
 export default {
   userAccountController,
   userController,
   categoryTemplateController,
   accountBookController,
   healthController,
+  accountBookBillController,
 };

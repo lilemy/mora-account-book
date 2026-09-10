@@ -138,8 +138,10 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
 
     @Override
     public UserAccountVO getUserAccountVOById(Long id) {
+        User loginUser = userService.getLoginUser();
         UserAccount userAccount = this.getById(id);
         ThrowUtils.throwIf(userAccount == null, ErrorCode.NOT_FOUND_ERROR, "账户不存在");
+        ThrowUtils.throwIf(!loginUser.getId().equals(userAccount.getUserId()), ErrorCode.NO_AUTH_ERROR, "无权限访问");
         return BeanUtil.copyProperties(userAccount, UserAccountVO.class);
     }
 
@@ -158,14 +160,17 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
 
     @Override
     public PageResult<UserAccountVO> getUserAccountVOPage(UserAccountQueryRequest request, PageQuery pageQuery) {
-        // 1.构建查询条件
+        // 1.获取当前用户
+        User loginUser = userService.getLoginUser();
+        // 2.构建查询条件
         QueryWrapper queryWrapper = this.buildQueryWrapper(request, pageQuery);
-        // 2.分页查询
+        queryWrapper.eq(UserAccount::getUserId, loginUser.getId());
+        // 3.分页查询
         Page<UserAccount> userAccountPage = this.page(pageQuery.build(), queryWrapper);
-        // 3.转换为封装类
+        // 4.转换为封装类
         Page<UserAccountVO> userAccountVOPage = userAccountPage.map(userAccount ->
                 BeanUtil.copyProperties(userAccount, UserAccountVO.class));
-        // 4.返回结果
+        // 5.返回结果
         return PageResult.build(userAccountVOPage);
     }
 
@@ -289,7 +294,9 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
     private UserAccount createLoanUserAccount(UserAccountCreateRequest request) {
         LocalDate loanDate = request.getLoanDate();
         LocalDate repaymentDate = request.getRepaymentDate();
-        ThrowUtils.throwIf(repaymentDate.isBefore(loanDate), ErrorCode.PARAMS_ERROR, "还款日期不能早于发生日期");
+        if (loanDate != null && repaymentDate != null) {
+            ThrowUtils.throwIf(repaymentDate.isBefore(loanDate), ErrorCode.PARAMS_ERROR, "还款日期不能早于发生日期");
+        }
         return UserAccount.builder()
                 .accountName(request.getAccountName())
                 .accountType(request.getAccountType())

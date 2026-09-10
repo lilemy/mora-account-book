@@ -22,6 +22,12 @@ export default [
     component: './Welcome',
   },
   {
+    path: '/account',
+    name: '账户',
+    icon: 'accountBook',
+    component: './account',
+  },
+  {
     path: '/admin',
     name: '管理页',
     icon: 'crown',
