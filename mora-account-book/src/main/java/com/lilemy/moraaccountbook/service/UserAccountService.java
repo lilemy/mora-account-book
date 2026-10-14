@@ -7,10 +7,13 @@ import com.lilemy.moraaccountbook.model.dto.user.UserAccountDeleteRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserAccountQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserAccountUpdateRequest;
 import com.lilemy.moraaccountbook.model.entity.UserAccount;
+import com.lilemy.moraaccountbook.model.enums.TransactionTypeEnum;
 import com.lilemy.moraaccountbook.model.vo.user.UserAccountManageVO;
 import com.lilemy.moraaccountbook.model.vo.user.UserAccountVO;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
+
+import java.math.BigDecimal;
 
 /**
  * 用户账户 服务层。
@@ -19,6 +22,28 @@ import com.mybatisflex.core.service.IService;
  * @since 2026-09-04
  */
 public interface UserAccountService extends IService<UserAccount> {
+
+    /**
+     * 根据账单更新账户余额
+     *
+     * @param accountId 账户ID
+     * @param userId    用户ID
+     * @param amount    账单金额
+     * @param billType  账单类型
+     * @return 账户信息
+     */
+    UserAccount updateBalanceByBill(Long accountId, Long userId, BigDecimal amount, TransactionTypeEnum billType);
+
+    /**
+     * 按收入方向的净变化调整余额，并锁定账户至事务结束。
+     * 普通/借出账户增加资产，信用/借入账户减少欠款；仅允许合法的最终余额。
+     *
+     * @param accountId 账户 ID
+     * @param userId 记账人 ID
+     * @param incomeDelta 收入方向净变化，可为负数或零；撤销流水时取原影响的相反数
+     * @return 调整后的账户
+     */
+    UserAccount adjustBalanceByBill(Long accountId, Long userId, BigDecimal incomeDelta);
 
     /**
      * 创建用户账户

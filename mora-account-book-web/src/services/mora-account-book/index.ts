@@ -5,14 +5,14 @@
 import * as userAccountController from "./userAccountController";
 import * as userController from "./userController";
 import * as categoryTemplateController from "./categoryTemplateController";
+import * as accountBookBillController from "./accountBookBillController";
 import * as accountBookController from "./accountBookController";
 import * as healthController from "./healthController";
-import * as accountBookBillController from "./accountBookBillController";
 export default {
   userAccountController,
   userController,
   categoryTemplateController,
+  accountBookBillController,
   accountBookController,
   healthController,
-  accountBookBillController,
 };

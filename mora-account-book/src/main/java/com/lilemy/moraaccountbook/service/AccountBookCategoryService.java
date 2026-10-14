@@ -1,6 +1,7 @@
 package com.lilemy.moraaccountbook.service;
 
 import com.lilemy.moraaccountbook.model.entity.AccountBookCategory;
+import com.lilemy.moraaccountbook.model.enums.TransactionTypeEnum;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookCategoryVO;
 import com.mybatisflex.core.service.IService;
 
@@ -25,9 +26,10 @@ public interface AccountBookCategoryService extends IService<AccountBookCategory
      * 根据账本ID获取分类列表
      *
      * @param accountBookId 账本ID
+     * @param type          分类类型
      * @return 分类列表
      */
-    List<AccountBookCategoryVO> getListByBook(Long accountBookId);
+    List<AccountBookCategoryVO> getCategoryListByBook(Long accountBookId, TransactionTypeEnum type);
 
     /**
      * 构建分类树列表

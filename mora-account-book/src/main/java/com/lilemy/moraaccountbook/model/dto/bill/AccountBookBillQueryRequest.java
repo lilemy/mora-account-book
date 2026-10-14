@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  * @date 2026-09-09
  */
 @Data
-@Schema(description = "账本收入/支出流水查询请求参数")
+@Schema(description = "账本流水查询请求参数")
 public class AccountBookBillQueryRequest implements Serializable {
 
     @Serial

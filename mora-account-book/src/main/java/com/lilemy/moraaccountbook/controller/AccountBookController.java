@@ -6,10 +6,12 @@ import com.lilemy.moraaccountbook.common.PageResult;
 import com.lilemy.moraaccountbook.common.ResultUtils;
 import com.lilemy.moraaccountbook.exception.ErrorCode;
 import com.lilemy.moraaccountbook.exception.ThrowUtils;
+import com.lilemy.moraaccountbook.model.dto.book.AccountBookCategoryQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookManageQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookUpdateRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookUserQueryRequest;
 import com.lilemy.moraaccountbook.model.entity.AccountBook;
+import com.lilemy.moraaccountbook.model.vo.book.AccountBookCategoryVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookManageVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookUserVO;
 import com.lilemy.moraaccountbook.service.AccountBookService;
@@ -18,6 +20,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 账本 控制层。
@@ -38,6 +42,12 @@ public class AccountBookController {
     public BaseResponse<PageResult<AccountBookUserVO>> getAccountBookPage(AccountBookUserQueryRequest request,
                                                                           PageQuery pageQuery) {
         return ResultUtils.success(accountBookService.getUserAccountBookPage(request, pageQuery));
+    }
+
+    @Operation(summary = "获取账本分类列表")
+    @GetMapping("/category/list")
+    public BaseResponse<List<AccountBookCategoryVO>> getAccountBookCategoryList(@Validated AccountBookCategoryQueryRequest request) {
+        return ResultUtils.success(accountBookService.getAccountBookCategoryVOList(request));
     }
 
     @Operation(summary = "获取账本信息（管理员）")

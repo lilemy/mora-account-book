@@ -10,6 +10,7 @@ import com.lilemy.moraaccountbook.model.entity.CategoryTemplate;
 import com.lilemy.moraaccountbook.model.entity.CategoryTemplateItem;
 import com.lilemy.moraaccountbook.model.enums.CategoryLevelEnum;
 import com.lilemy.moraaccountbook.model.enums.EnableStatusEnum;
+import com.lilemy.moraaccountbook.model.enums.TransactionTypeEnum;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookCategoryVO;
 import com.lilemy.moraaccountbook.service.AccountBookCategoryService;
 import com.lilemy.moraaccountbook.service.CategoryTemplateItemService;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 账本分类 服务层实现。
@@ -100,12 +102,13 @@ public class AccountBookCategoryServiceImpl extends ServiceImpl<AccountBookCateg
     }
 
     @Override
-    public List<AccountBookCategoryVO> getListByBook(Long accountBookId) {
+    public List<AccountBookCategoryVO> getCategoryListByBook(Long accountBookId, TransactionTypeEnum type) {
         if (accountBookId == null) {
             return List.of();
         }
         List<AccountBookCategory> categoryList = this.queryChain()
                 .eq(AccountBookCategory::getBookId, accountBookId)
+                .eq(AccountBookCategory::getCategoryType, type, Objects.nonNull(type))
                 .list();
         if (CollUtil.isEmpty(categoryList)) {
             return List.of();

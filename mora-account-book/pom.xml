@@ -43,6 +43,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
+        <!-- 提供 Bean Validation 实现，使请求 DTO 上的参数校验注解生效。 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
         <!-- AOP 切面 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

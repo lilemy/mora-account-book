@@ -4,15 +4,20 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.lilemy.moraaccountbook.common.PageQuery;
 import com.lilemy.moraaccountbook.common.PageResult;
+import com.lilemy.moraaccountbook.constant.CommonConstant;
 import com.lilemy.moraaccountbook.exception.ErrorCode;
 import com.lilemy.moraaccountbook.exception.ThrowUtils;
+import com.lilemy.moraaccountbook.mapper.AccountBookBillMapper;
 import com.lilemy.moraaccountbook.mapper.UserAccountMapper;
 import com.lilemy.moraaccountbook.model.dto.user.UserAccountCreateRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserAccountDeleteRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserAccountQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.user.UserAccountUpdateRequest;
+import com.lilemy.moraaccountbook.model.entity.AccountBookBill;
 import com.lilemy.moraaccountbook.model.entity.User;
 import com.lilemy.moraaccountbook.model.entity.UserAccount;
+import com.lilemy.moraaccountbook.model.enums.TransactionTypeEnum;
+import com.lilemy.moraaccountbook.model.enums.user.UserAccountLoanDirectionEnum;
 import com.lilemy.moraaccountbook.model.enums.user.UserAccountTypeEnum;
 import com.lilemy.moraaccountbook.model.enums.user.UserRoleEnum;
 import com.lilemy.moraaccountbook.model.vo.user.UserAccountManageVO;
@@ -21,6 +26,7 @@ import com.lilemy.moraaccountbook.service.UserAccountService;
 import com.lilemy.moraaccountbook.service.UserService;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.util.UpdateEntity;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +52,48 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private AccountBookBillMapper accountBookBillMapper;
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public UserAccount updateBalanceByBill(Long accountId, Long userId, BigDecimal amount, TransactionTypeEnum billType) {
+        ThrowUtils.throwIf(amount == null || amount.signum() <= 0 || billType == null,
+                ErrorCode.PARAMS_ERROR, "流水金额和收支类型不合法");
+        return adjustBalanceByBill(accountId, userId, TransactionTypeEnum.INCOME.equals(billType) ? amount : amount.negate());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public UserAccount adjustBalanceByBill(Long accountId, Long userId, BigDecimal incomeDelta) {
+        ThrowUtils.throwIf(accountId == null || accountId <= 0 || userId == null || incomeDelta == null,
+                ErrorCode.PARAMS_ERROR, "余额调整参数不合法");
+        // 锁住账户直至事务提交，避免并发记账读取相同余额后互相覆盖。
+        UserAccount account = this.getOne(QueryWrapper.create().eq(UserAccount::getId, accountId).forUpdate());
+        ThrowUtils.throwIf(account == null, ErrorCode.NOT_FOUND_ERROR, "账户不存在");
+        ThrowUtils.throwIf(!Objects.equals(account.getUserId(), userId), ErrorCode.NO_AUTH_ERROR, "账户不属于记账人");
+        // 信用账户和借入账户记录欠款，收入减少欠款；其他账户记录资产，收入增加资产。
+        boolean debt = UserAccountTypeEnum.CREDIT.equals(account.getAccountType())
+                || (UserAccountTypeEnum.LOAN.equals(account.getAccountType())
+                && UserAccountLoanDirectionEnum.BORROW.equals(account.getLoanDirection()));
+        BigDecimal balance = account.getCurrentBalance().add(debt ? incomeDelta.negate() : incomeDelta);
+        // 只校验最终余额，避免更新流水时因中间撤销状态而误报余额不足。
+        ThrowUtils.throwIf(balance.signum() < 0, ErrorCode.PARAMS_ERROR, "调整后余额或欠款不能为负数");
+        ThrowUtils.throwIf(balance.compareTo(CommonConstant.MAX_MONEY_DECIMAL) > 0,
+                ErrorCode.PARAMS_ERROR, "账户余额超出允许范围");
+        if (UserAccountTypeEnum.CREDIT.equals(account.getAccountType()) && account.getCreditLimit() != null) {
+            ThrowUtils.throwIf(balance.compareTo(account.getCreditLimit()) > 0,
+                    ErrorCode.PARAMS_ERROR, "调整后欠款超过信用额度");
+        }
+        if (incomeDelta.signum() != 0) {
+            // 仅更新余额字段，避免覆盖账户名称等信息。
+            boolean updated = this.updateById(UserAccount.builder().id(accountId).currentBalance(balance).build());
+            ThrowUtils.throwIf(!updated, ErrorCode.OPERATION_ERROR, "更新账户余额失败");
+        }
+        account.setCurrentBalance(balance);
+        return account;
+    }
 
     @Override
     public Long createUserAccount(UserAccountCreateRequest request) {
@@ -116,19 +164,26 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean deleteUserAccount(UserAccountDeleteRequest request) {
         Long id = request.getId();
         Boolean isKeepBill = request.getIsKeepBill();
         // 1.查询账户是否存在
-        UserAccount account = this.getById(id);
+        UserAccount account = this.getOne(QueryWrapper.create().eq(UserAccount::getId, id).forUpdate());
         ThrowUtils.throwIf(account == null, ErrorCode.NOT_FOUND_ERROR, "账户不存在");
         // 2.判断是否有操作权限
         ThrowUtils.throwIf(!hasOperationPermission(account), ErrorCode.NO_AUTH_ERROR, "无操作权限");
-        // TODO 3.判断账户下是否有账单，如果存在则根据isKeepBill决定是否删除账单
-        if (isKeepBill) {
-            // 如果保留，则移除账单与账户的关联
-        } else {
-            // 如果不保留，则删除账单
+        QueryWrapper billQuery = QueryWrapper.create().eq(AccountBookBill::getAccountId, id);
+        if (accountBookBillMapper.selectCountByQuery(billQuery) > 0) {
+            int affectedRows;
+            if (isKeepBill) {
+                AccountBookBill updated = UpdateEntity.of(AccountBookBill.class);
+                updated.setAccountId(null);
+                affectedRows = accountBookBillMapper.updateByQuery(updated, billQuery);
+            } else {
+                affectedRows = accountBookBillMapper.deleteByQuery(billQuery);
+            }
+            ThrowUtils.throwIf(affectedRows <= 0, ErrorCode.OPERATION_ERROR, "处理账户账单失败");
         }
         // 4.删除账户
         boolean result = this.removeById(id);

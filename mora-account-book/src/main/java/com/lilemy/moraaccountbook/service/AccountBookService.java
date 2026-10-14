@@ -2,16 +2,19 @@ package com.lilemy.moraaccountbook.service;
 
 import com.lilemy.moraaccountbook.common.PageQuery;
 import com.lilemy.moraaccountbook.common.PageResult;
+import com.lilemy.moraaccountbook.model.dto.book.AccountBookCategoryQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookManageQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookUpdateRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookUserQueryRequest;
 import com.lilemy.moraaccountbook.model.entity.AccountBook;
+import com.lilemy.moraaccountbook.model.vo.book.AccountBookCategoryVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookManageVO;
 import com.lilemy.moraaccountbook.model.vo.book.AccountBookUserVO;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,6 +68,14 @@ public interface AccountBookService extends IService<AccountBook> {
     AccountBookManageVO getAccountBookManageVO(AccountBook accountBook);
 
     /**
+     * 获取账本分类封装信息列表
+     *
+     * @param request 查询请求
+     * @return 账本分类封装信息列表
+     */
+    List<AccountBookCategoryVO> getAccountBookCategoryVOList(AccountBookCategoryQueryRequest request);
+
+    /**
      * 更新账本
      *
      * @param request 账本更新请求
@@ -87,4 +98,13 @@ public interface AccountBookService extends IService<AccountBook> {
      * @return 账本信息
      */
     Map<Long, AccountBook> getAccountBookMapByIds(Collection<Long> ids);
+
+    /**
+     * 检查账本权限
+     *
+     * @param bookId 账本ID
+     * @param userId 用户ID
+     * @return 账本信息
+     */
+    AccountBook checkBookPermission(Long bookId, Long userId);
 }

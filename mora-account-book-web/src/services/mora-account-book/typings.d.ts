@@ -1,4 +1,19 @@
 declare namespace API {
+  type AccountBookBillCreateRequest = {
+    /** 所属账本 ID */
+    bookId: number;
+    /** 关联账户 ID */
+    accountId?: number;
+    /** 关联账本分类 ID */
+    categoryId: number;
+    /** 流水金额 */
+    amount: number;
+    /** 流水发生时间 */
+    billTime?: string;
+    /** 流水备注 */
+    remark?: string;
+  };
+
   type AccountBookBillManageVO = {
     /** 流水 ID */
     id?: number;
@@ -12,6 +27,67 @@ declare namespace API {
     userPhone?: string;
     /** 记账人用户名称 */
     userName?: string;
+    /** 关联账户 ID */
+    accountId?: number;
+    /** 账户名称 */
+    accountName?: string;
+    /** 关联账本分类 ID */
+    categoryId?: number;
+    /** 分类名称 */
+    categoryName?: string;
+    /** 流水类型 */
+    billType?: "INCOME" | "EXPENSE";
+    /** 流水金额 */
+    amount?: number;
+    /** 流水发生时间 */
+    billTime?: string;
+    /** 流水备注 */
+    remark?: string;
+    /** 创建时间 */
+    createTime?: string;
+    /** 更新时间 */
+    updateTime?: string;
+  };
+
+  type AccountBookBillMonthListVO = {
+    /** 排序 */
+    order?: number;
+    /** 日期 */
+    date?: string;
+    /** 收入金额 */
+    income?: number;
+    /** 支出金额 */
+    expense?: number;
+    /** 流水列表 */
+    bills?: AccountBookBillVO[];
+  };
+
+  type AccountBookBillMonthTotalVO = {
+    /** 月份 */
+    month?: number;
+    /** 总收入 */
+    totalIncome?: number;
+    /** 总支出 */
+    totalExpense?: number;
+  };
+
+  type AccountBookBillUpdateRequest = {
+    id: number;
+    /** 账户 ID：不传保留，0 解除关联，正数切换账户 */
+    accountId?: number;
+    categoryId?: number;
+    amount?: number;
+    billTime?: string;
+    remark?: string;
+  };
+
+  type AccountBookBillVO = {
+    /** 流水 ID */
+    id?: number;
+    /** 所属账本 ID */
+    bookId?: number;
+    /** 所属账本名称 */
+    bookName?: string;
     /** 关联账户 ID */
     accountId?: number;
     /** 账户名称 */
@@ -161,6 +237,14 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseAccountBookBillVO = {
+    /** 状态码 */
+    code?: number;
+    data?: AccountBookBillVO;
+    /** 提示信息 */
+    message?: string;
+  };
+
   type BaseResponseAccountBookManageVO = {
     /** 状态码 */
     code?: number;
@@ -186,6 +270,33 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseListAccountBookBillMonthListVO = {
+    /** 状态码 */
+    code?: number;
+    /** 数据 */
+    data?: AccountBookBillMonthListVO[];
+    /** 提示信息 */
+    message?: string;
+  };
+
+  type BaseResponseListAccountBookBillMonthTotalVO = {
+    /** 状态码 */
+    code?: number;
+    /** 数据 */
+    data?: AccountBookBillMonthTotalVO[];
+    /** 提示信息 */
+    message?: string;
+  };
+
+  type BaseResponseListAccountBookCategoryVO = {
+    /** 状态码 */
+    code?: number;
+    /** 数据 */
+    data?: AccountBookCategoryVO[];
+    /** 提示信息 */
+    message?: string;
+  };
+
   type BaseResponseLoginUserVO = {
     /** 状态码 */
     code?: number;
@@ -207,6 +318,14 @@ declare namespace API {
     /** 状态码 */
     code?: number;
     data?: PageResultAccountBookBillManageVO;
+    /** 提示信息 */
+    message?: string;
+  };
+
+  type BaseResponsePageResultAccountBookBillVO = {
+    /** 状态码 */
+    code?: number;
+    data?: PageResultAccountBookBillVO;
     /** 提示信息 */
     message?: string;
   };
@@ -370,6 +489,10 @@ declare namespace API {
     isDefault?: string;
   };
 
+  type deleteAccountBookBillParams = {
+    id: number;
+  };
+
   type deleteAccountBookParams = {
     id: number;
   };
@@ -388,6 +511,13 @@ declare namespace API {
 
   type getAccountBookByIdParams = {
     id: number;
+  };
+
+  type getAccountBookCategoryListParams = {
+    /** 账本ID */
+    bookId: string;
+    /** 分类类型 */
+    categoryType: string;
   };
 
   type getAccountBookManageVOPageParams = {
@@ -449,15 +579,11 @@ declare namespace API {
     id: number;
   };
 
-  type getUserAccountManageVOById1Params = {
+  type getUserAccountBookBillManageVOByIdParams = {
     id: number;
   };
 
-  type getUserAccountManageVOByIdParams = {
-    id: number;
-  };
-
-  type getUserAccountManageVOPage1Params = {
+  type getUserAccountBookBillManageVOPageParams = {
     /** 所属账本 ID */
     bookId?: string;
     /** 记账人用户 ID */
@@ -478,6 +604,51 @@ declare namespace API {
     sortField?: string;
     /** 排序顺序 */
     sortOrder?: string;
+  };
+
+  type getUserAccountBookBillTotalByMonthParams = {
+    /** 所属账本 ID */
+    bookId: string;
+    /** 日历日期 */
+    calendarDate: string;
+  };
+
+  type getUserAccountBookBillVOByIdParams = {
+    id: number;
+  };
+
+  type getUserAccountBookBillVOListByMonthParams = {
+    /** 所属账本 ID */
+    bookId: string;
+    /** 日历日期 */
+    calendarDate: string;
+  };
+
+  type getUserAccountBookBillVOPageParams = {
+    /** 所属账本 ID */
+    bookId?: string;
+    /** 记账人用户 ID */
+    userId?: string;
+    /** 分类名称 */
+    categoryName?: string;
+    /** 流水类型 */
+    billType?: string;
+    /** 流水开始时间 */
+    startBillTime?: string;
+    /** 流水结束时间 */
+    endBillTime?: string;
+    /** 分页大小 */
+    pageSize?: string;
+    /** 当前页数 */
+    pageNum?: string;
+    /** 排序字段 */
+    sortField?: string;
+    /** 排序顺序 */
+    sortOrder?: string;
+  };
+
+  type getUserAccountManageVOByIdParams = {
+    id: number;
   };
 
   type getUserAccountManageVOPageParams = {
@@ -572,6 +743,19 @@ declare namespace API {
   type PageResultAccountBookBillManageVO = {
     /** 当前页数据 */
     records?: AccountBookBillManageVO[];
+    /** 当前页码 */
+    pageNum?: number;
+    /** 每页数据数量 */
+    pageSize?: number;
+    /** 总页数 */
+    totalPage?: number;
+    /** 总数据数量 */
+    totalRow?: number;
+  };
+
+  type PageResultAccountBookBillVO = {
+    /** 当前页数据 */
+    records?: AccountBookBillVO[];
     /** 当前页码 */
     pageNum?: number;
     /** 每页数据数量 */

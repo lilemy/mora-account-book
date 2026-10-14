@@ -9,6 +9,7 @@ import com.lilemy.moraaccountbook.exception.BusinessException;
 import com.lilemy.moraaccountbook.exception.ErrorCode;
 import com.lilemy.moraaccountbook.exception.ThrowUtils;
 import com.lilemy.moraaccountbook.mapper.AccountBookMapper;
+import com.lilemy.moraaccountbook.model.dto.book.AccountBookCategoryQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookManageQueryRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookUpdateRequest;
 import com.lilemy.moraaccountbook.model.dto.book.AccountBookUserQueryRequest;
@@ -16,6 +17,7 @@ import com.lilemy.moraaccountbook.model.entity.AccountBook;
 import com.lilemy.moraaccountbook.model.entity.AccountBookCategory;
 import com.lilemy.moraaccountbook.model.entity.AccountBookMember;
 import com.lilemy.moraaccountbook.model.entity.User;
+import com.lilemy.moraaccountbook.model.enums.TransactionTypeEnum;
 import com.lilemy.moraaccountbook.model.enums.book.AccountBookMemberRoleEnum;
 import com.lilemy.moraaccountbook.model.enums.book.AccountBookMemberStatusEnum;
 import com.lilemy.moraaccountbook.model.enums.book.AccountBookStatusEnum;
@@ -250,10 +252,20 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
                 .toList();
         accountBookManageVO.setMemberList(memberVOList);
         // 7.封装账本分类列表
-        List<AccountBookCategoryVO> categoryVOList = accountBookCategoryService.getListByBook(accountBook.getId());
+        List<AccountBookCategoryVO> categoryVOList = accountBookCategoryService.getCategoryListByBook(accountBook.getId(), null);
         accountBookManageVO.setCategoryList(categoryVOList);
         // 8.返回封装对象
         return accountBookManageVO;
+    }
+
+    @Override
+    public List<AccountBookCategoryVO> getAccountBookCategoryVOList(AccountBookCategoryQueryRequest request) {
+        Long bookId = request.getBookId();
+        TransactionTypeEnum categoryType = request.getCategoryType();
+        // 1.参数校验
+        this.checkBookPermission(bookId, userService.getLoginUserCache().getId());
+        // 2.获取账本分类列表
+        return accountBookCategoryService.getCategoryListByBook(bookId, categoryType);
     }
 
     @Override
@@ -312,5 +324,23 @@ public class AccountBookServiceImpl extends ServiceImpl<AccountBookMapper, Accou
             return Collections.emptyMap();
         }
         return accountBookList.stream().collect(Collectors.toMap(AccountBook::getId, Function.identity(), (v1, v2) -> v1));
+    }
+
+    /**
+     * 个人账本仅所有者可记账，共享账本要求所有者或有效成员，归档后不可变更。
+     */
+    @Override
+    public AccountBook checkBookPermission(Long bookId, Long userId) {
+        AccountBook book = this.getById(bookId);
+        ThrowUtils.throwIf(book == null, ErrorCode.NOT_FOUND_ERROR, "账本不存在");
+        boolean allowed = Objects.equals(book.getOwnerId(), userId);
+        if (!allowed && AccountBookTypeEnum.SHARE.equals(book.getBookType())) {
+            allowed = accountBookMemberService.count(QueryWrapper.create()
+                    .eq(AccountBookMember::getBookId, bookId)
+                    .eq(AccountBookMember::getUserId, userId)
+                    .eq(AccountBookMember::getStatus, AccountBookMemberStatusEnum.NORMAL)) > 0;
+        }
+        ThrowUtils.throwIf(!allowed, ErrorCode.NO_AUTH_ERROR, "无账本操作权限");
+        return book;
     }
 }

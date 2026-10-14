@@ -298,7 +298,7 @@ create table if not exists account_book_bill
     user_id       bigint                              not null,
     -- 账户删除后，保留流水时允许解除关联
     account_id    bigint,
-    account_name  varchar(64)                         not null,
+    account_name  varchar(64),
     -- 分类删除或调整后，保留历史分类名称
     category_id   bigint,
     category_name varchar(64)                         not null,
